@@ -3,7 +3,11 @@ const { PermissionsBitField, ActionRowBuilder, ButtonBuilder, EmbedBuilder, Moda
 // Memória temporária para impedir votos duplos nas enquetes
 const memoriaEnquetes = new Map();
 
-// ==========================================
+module.exports = {
+    name: 'interactionCreate',
+    async execute(interaction, client) {
+
+        // ==========================================
         // 0. DESPACHANTE DE SLASH COMMANDS (/)
         // ==========================================
         if (interaction.isChatInputCommand()) {
@@ -24,10 +28,6 @@ const memoriaEnquetes = new Map();
             }
             return; // Impede que o código continue rodando e verifique botões acidentalmente
         }
-
-module.exports = {
-    name: 'interactionCreate',
-    async execute(interaction, client) {
 
         // ==========================================
         // 1. BOTÕES DA PORTA DA TAVERNA (Classes)
