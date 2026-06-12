@@ -19,7 +19,7 @@ module.exports = {
             } catch (error) {
                 console.error(`Erro ao executar o comando /${interaction.commandName}:`, error);
                 const resposta = { content: '❌ Ocorreu uma falha grave na Taverna ao tentar executar isso.', ephemeral: true };
-                
+
                 if (interaction.replied || interaction.deferred) {
                     await interaction.followUp(resposta);
                 } else {
@@ -30,52 +30,52 @@ module.exports = {
         }
 
         // ==========================================
-        // 1. BOTÕES DA PORTA DA TAVERNA (Classes)
+        // 1. MENUS DA PORTA DA TAVERNA (Cargos Múltiplos)
         // ==========================================
-        if (interaction.isButton() && interaction.customId.startsWith('role_')) {
-            const guild = interaction.guild;
-            const member = interaction.member;
+        if (interaction.isStringSelectMenu()) {
+            if (interaction.customId === 'menu_jogos' || interaction.customId === 'menu_alertas') {
+                await interaction.deferReply({ ephemeral: true });
 
-            const cargosMap = {
-                'role_rpg': '🎲 RPG & Coop',
-                'role_fps': '🏹 FPS',
-                'role_moba': '⚔️ MOBA',
-                'role_comp': '🏆 Competitivo',
-                'role_mobile': '📱 Mobile',
-                'role_social': '🍺 Social & Casual'
-            };
+                const member = interaction.member;
+                const guild = interaction.guild;
+                const selecoes = interaction.values; // Lista com os nomes dos cargos escolhidos
 
-            const nomeCargo = cargosMap[interaction.customId];
-            if (!nomeCargo) return;
+                // Puxa as opções originais do menu que o membro clicou para saber o que ele NÃO escolheu
+                const opcoesDoMenu = interaction.component.options.map(opt => opt.value);
 
-            const cargoSelecionado = guild.roles.cache.find(r => r.name === nomeCargo);
-            const cargoViajante = guild.roles.cache.find(r => r.name === '🎒 Viajante');
+                try {
+                    // 1. Adiciona os cargos que o membro selecionou no menu
+                    for (const nomeCargo of selecoes) {
+                        const cargo = guild.roles.cache.find(r => r.name === nomeCargo);
+                        if (cargo && !member.roles.cache.has(cargo.id)) {
+                            await member.roles.add(cargo);
+                        }
+                    }
 
-            if (!cargoSelecionado) {
-                return interaction.reply({ content: '❌ O Mestre Taverneiro ainda não forjou este cargo no servidor.', ephemeral: true });
-            }
+                    // 2. Remove os cargos que o membro desmarcou no menu
+                    for (const nomeOpcao of opcoesDoMenu) {
+                        if (!selecoes.includes(nomeOpcao)) { // Se está no menu, mas não está selecionado
+                            const cargoRemover = guild.roles.cache.find(r => r.name === nomeOpcao);
+                            if (cargoRemover && member.roles.cache.has(cargoRemover.id)) {
+                                await member.roles.remove(cargoRemover);
+                            }
+                        }
+                    }
 
-            try {
-                // Entrega o cargo da classe escolhida
-                await member.roles.add(cargoSelecionado);
+                    // 3. Garante o cargo de Viajante (caso seja a primeira vez dele)
+                    const cargoViajante = guild.roles.cache.find(r => r.name === '🎒 Viajante');
+                    if (cargoViajante && !member.roles.cache.has(cargoViajante.id)) {
+                        await member.roles.add(cargoViajante);
+                    }
 
-                // Se ele ainda não for um Viajante, dá o cargo para destravar o servidor
-                if (cargoViajante && !member.roles.cache.has(cargoViajante.id)) {
-                    await member.roles.add(cargoViajante);
+                    return interaction.followUp({ content: '✅ Seu perfil na Taverna foi atualizado com sucesso!' });
+
+                } catch (error) {
+                    console.error('Erro ao atualizar cargos do menu:', error);
+                    return interaction.followUp({ content: '❌ Ocorreu um erro ao atualizar seus registros.' });
                 }
-
-                // Resposta Efêmera (Silenciosa): Não polui o chat, apenas o membro lê!
-                return interaction.reply({
-                    content: `✅ Você escolheu o caminho **${nomeCargo}**! As portas da Taverna agora estão destrancadas para você. Beba com moderação!`,
-                    ephemeral: true
-                });
-
-            } catch (error) {
-                console.error('Erro ao dar cargo:', error);
-                return interaction.reply({ content: '❌ Erro ao atribuir o cargo. Avise a administração.', ephemeral: true });
             }
         }
-
         // ==========================================
         // 2. BOTÕES DA MESA TEMPORÁRIA (Salas de Voz)
         // ==========================================
