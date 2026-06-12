@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, PermissionFlagsBits, AttachmentBuilder } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits, AttachmentBuilder, MessageFlags } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -7,8 +7,10 @@ module.exports = {
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
     async execute(interaction) {
-        // O ephemeral: true garante que só você veja a resposta do bot
-        await interaction.deferReply({ ephemeral: true });
+        // Substituindo isto:
+        // await interaction.deferReply({ ephemeral: true });
+
+        await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
         const guild = interaction.guild;
         await guild.channels.fetch(); // Força o bot a ler os canais mais recentes
@@ -32,7 +34,7 @@ module.exports = {
         categorias.forEach(categoria => {
             relatorio += `[CATEGORIA] ${categoria.name}\n`;
             const filhos = guild.channels.cache.filter(c => c.parentId === categoria.id);
-            
+
             filhos.forEach(c => {
                 relatorio += `  -> ${c.name} (${obterTipo(c.type)})\n`;
             });
@@ -52,7 +54,7 @@ module.exports = {
 
 // Função auxiliar para traduzir o código numérico do Discord para texto legível
 function obterTipo(tipo) {
-    switch(tipo) {
+    switch (tipo) {
         case 0: return 'Texto';
         case 2: return 'Voz';
         case 4: return 'Categoria';

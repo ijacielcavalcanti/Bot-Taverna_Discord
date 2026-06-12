@@ -122,8 +122,14 @@ module.exports = {
                 canalVoz.members.forEach(member => {
                     if (member.user.bot) return;
 
-                    // Sistema Anti-AFK: Se estiver mutado ou ensurdecido pelo headset, não farma Ouro.
-                    if (member.voice.deaf || member.voice.mute) return;
+                    // ==========================================
+                    // SISTEMA ANTI-AFK E ANTI-FARM
+                    // ==========================================
+                    // 1. O membro foi movido pelo Discord para a sala AFK?
+                    if (canalVoz.id === ids.canais.afk) return;
+
+                    // 2. O membro está em uma sala válida, mas se mutou ou ensurdeceu para não participar?
+                    if (member.voice.selfDeaf || member.voice.serverDeaf || member.voice.selfMute || member.voice.serverMute) return;
 
                     let membroDb = db.prepare('SELECT * FROM membros WHERE id = ?').get(member.id);
                     if (!membroDb) {
@@ -142,7 +148,7 @@ module.exports = {
                     if (novoXp >= xpParaProximoNivel) {
                         novoLevel++;
                         db.prepare('UPDATE membros SET xp = ?, level = ?, gold = ? WHERE id = ?').run(novoXp, novoLevel, novoGold + 50, member.id);
-                        
+
                         const canalAvisos = guilda.channels.cache.get(ids.canais.avisos);
                         if (canalAvisos) {
                             const embedLevelUp = {
