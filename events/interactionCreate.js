@@ -3,6 +3,28 @@ const { PermissionsBitField, ActionRowBuilder, ButtonBuilder, EmbedBuilder, Moda
 // Memória temporária para impedir votos duplos nas enquetes
 const memoriaEnquetes = new Map();
 
+// ==========================================
+        // 0. DESPACHANTE DE SLASH COMMANDS (/)
+        // ==========================================
+        if (interaction.isChatInputCommand()) {
+            const command = client.commands.get(interaction.commandName);
+            if (!command) return;
+
+            try {
+                await command.execute(interaction);
+            } catch (error) {
+                console.error(`Erro ao executar o comando /${interaction.commandName}:`, error);
+                const resposta = { content: '❌ Ocorreu uma falha grave na Taverna ao tentar executar isso.', ephemeral: true };
+                
+                if (interaction.replied || interaction.deferred) {
+                    await interaction.followUp(resposta);
+                } else {
+                    await interaction.reply(resposta);
+                }
+            }
+            return; // Impede que o código continue rodando e verifique botões acidentalmente
+        }
+
 module.exports = {
     name: 'interactionCreate',
     async execute(interaction, client) {
