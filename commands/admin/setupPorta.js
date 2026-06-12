@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, PermissionFlagsBits, ActionRowBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits, ActionRowBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, EmbedBuilder, MessageFlags } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -49,6 +49,6 @@ module.exports = {
         await interaction.channel.send({ embeds: [embed], components: [linhaJogos, linhaAlertas] });
 
         // Confirmação invisível para você
-        await interaction.reply({ content: '✅ Painel gerado com sucesso!', ephemeral: true });
+        await interaction.reply({ content: '✅ Painel gerado com sucesso!', flags: MessageFlags.Ephemeral });
     },
 };

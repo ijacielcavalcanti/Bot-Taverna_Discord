@@ -1,4 +1,4 @@
-const { PermissionsBitField, ActionRowBuilder, ButtonBuilder, EmbedBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
+const { PermissionsBitField, ActionRowBuilder, ButtonBuilder, EmbedBuilder, ModalBuilder, TextInputBuilder, TextInputStyle, MessageFlags } = require('discord.js');
 
 // Memória temporária para impedir votos duplos nas enquetes
 const memoriaEnquetes = new Map();
@@ -34,7 +34,7 @@ module.exports = {
         // ==========================================
         if (interaction.isStringSelectMenu()) {
             if (interaction.customId === 'menu_jogos' || interaction.customId === 'menu_alertas') {
-                await interaction.deferReply({ ephemeral: true });
+                await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
                 const member = interaction.member;
                 const guild = interaction.guild;
