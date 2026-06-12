@@ -33,11 +33,16 @@ if (fs.existsSync(commandsFolders)) {
         const commandFiles = fs.readdirSync(path.join(commandsFolders, folder)).filter(file => file.endsWith('.js'));
         for (const file of commandFiles) {
             const command = require(path.join(commandsFolders, folder, file));
-            client.commands.set(command.name, command);
+            
+            // O bot agora aceita tanto comandos clássicos (!) quanto comandos de barra (/)
+            const nomeDoComando = command.name || (command.data && command.data.name);
+            
+            if (nomeDoComando) {
+                client.commands.set(nomeDoComando, command);
+            }
         }
     }
 }
-
 // -----------------------------------------------------
 // 2. CARREGAMENTO MODULAR DE EVENTOS
 // -----------------------------------------------------
