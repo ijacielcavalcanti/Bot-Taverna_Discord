@@ -44,7 +44,7 @@ module.exports = {
         const attachment = new AttachmentBuilder(buffer, { name: 'estrutura_taverna.txt' });
 
         await interaction.editReply({
-            content: '✅ Auditoria concluída. Faça o download do mapa do servidor abaixo para enviar ao Raphael:',
+            content: '✅ Auditoria concluída. Faça o download do mapa do servidor abaixo:',
             files: [attachment]
         });
     },
