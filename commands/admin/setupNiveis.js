@@ -12,13 +12,13 @@ module.exports = {
 
         // Lista de cargos de progressão e suas cores hexadecimais
         const cargosNiveis = [
-            { name: '🎒 Viajante', colors: '#A0A0A0' }, // Cinza
-            { name: '🗡️ Aventureiro', colors: '#11806a' }, // Bronze
-            { name: '🛡️ Veterano', colors: '#1b214d' }, // Prata
-            { name: '👑 Herói da Guilda', colors: '#a07e04' }, // Ouro
-            { name: '🐉 Monarca', colors: '#8A2BE2' }, // Roxo
-            { name: '🐦‍🔥 Lenda Viva', colors: '#FF4500' }, // Laranja Fogo
-            { name: '🪽 Celeste', colors: '#00FFFF' }  // Ciano Brilhante
+            { name: '🎒 Viajante', color: '#A0A0A0' }, // Cinza
+            { name: '🗡️ Aventureiro', color: '#11806a' }, // Bronze
+            { name: '🛡️ Veterano', color: '#1b214d' }, // Prata
+            { name: '👑 Herói da Guilda', color: '#a07e04' }, // Ouro
+            { name: '🐉 Monarca', color: '#8A2BE2' }, // Roxo
+            { name: '🐦‍🔥 Lenda Viva', color: '#FF4500' }, // Laranja Fogo
+            { name: '🪽 Celeste', color: '#00FFFF' }  // Ciano Brilhante
         ];
         let criados = 0;
         let atualizados = 0;
@@ -29,14 +29,14 @@ module.exports = {
             if (!roleExiste) {
                 await guild.roles.create({
                     name: cargo.name,
-                    colors: cargo.colors,
+                    color: cargo.color,
                     hoist: true,
                     reason: 'Setup automático: Criação de níveis da Taverna'
                 });
                 criados++;
             } else {
                 await roleExiste.edit({
-                    colors: cargo.colors,
+                    color: cargo.color,
                     hoist: true,
                     reason: 'Setup automático: Atualização de níveis da Taverna'
                 });
