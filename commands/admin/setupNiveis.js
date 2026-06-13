@@ -1,4 +1,3 @@
-JavaScript
 const { SlashCommandBuilder, PermissionFlagsBits, MessageFlags } = require('discord.js');
 
 module.exports = {
