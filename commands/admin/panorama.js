@@ -21,7 +21,7 @@ module.exports = {
         const cargosLista = alvo.roles.cache.filter(r => r.id !== message.guild.id).map(r => r.name).join(' • ') || 'Nenhum cargo';
 
         const embedPanorama = new EmbedBuilder()
-            .setColor(0x8E44AD)
+            .setcolor(0x8E44AD)
             .setTitle(`👁️ O Olho de Sauron: Panorama de ${alvo.user.username}`)
             .setThumbnail(alvo.user.displayAvatarURL({ dynamic: true, size: 1024 }))
             .addFields(
