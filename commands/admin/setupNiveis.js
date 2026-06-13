@@ -13,9 +13,9 @@ module.exports = {
         // Lista de cargos de progressão e suas cores hexadecimais (do menor pro maior)
         const cargosNiveis = [
             { name: '🎒 Viajante', color: '#A0A0A0' }, // Cinza
-            { name: '🗡️ Aventureiro', color: '#CD7F32' }, // Bronze
-            { name: '🛡️ Veterano', color: '#C0C0C0' }, // Prata
-            { name: '👑 Herói da Guilda', color: '#FFD700' }, // Ouro
+            { name: '🗡️ Aventureiro', color: '#11806a' }, // Bronze
+            { name: '🛡️ Veterano', color: '#1b214d' }, // Prata
+            { name: '👑 Herói da Guilda', color: '#a07e04' }, // Ouro
             { name: '🐉 Monarca', color: '#8A2BE2' }, // Roxo
             { name: '🐦‍🔥 Lenda Viva', color: '#FF4500' }, // Laranja Fogo
             { name: '🪽 Celeste', color: '#00FFFF' }  // Ciano Brilhante
