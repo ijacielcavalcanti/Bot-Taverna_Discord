@@ -1,5 +1,5 @@
 // Ajuste o caminho do require para o local exato do seu arquivo JSON
-const ids = require('../../caminho_para_seu_arquivo.json'); 
+const ids = require('../../config/ids.json');
 const { SlashCommandBuilder, PermissionFlagsBits, MessageFlags } = require('discord.js');
 
 module.exports = {
