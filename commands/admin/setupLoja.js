@@ -15,8 +15,8 @@ module.exports = {
             { name: '🎨 Tintura Carmesim', color: '#DC143C', hoist: false },
             { name: '🎨 Tintura Esmeralda', color: '#50C878', hoist: false },
             { name: '🎨 Tintura Abissal', color: '#2F004F', hoist: false },
-            { name: '💎 Passaporte VIP', color: '#FFD700', hoist: true },
-            { name: '👑 O Nobre', color: '#FF8C00', hoist: true }, // Título de Honra adicionado
+            { name: '💎 VIP', color: '#ff1493', hoist: true },
+            { name: '👑 O Nobre', color: '#e74c3c', hoist: true }, // Título de Honra adicionado
             { name: '🗝️ Acesso ao Porão', color: '#000000', hoist: false }
         ];
 

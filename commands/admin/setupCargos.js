@@ -37,12 +37,7 @@ module.exports = {
                 hoist: true, 
                 permissions: [] 
             },
-            { 
-                name: '✨ Mecenas', 
-                color: '#F47FFF', // Rosa Booster
-                hoist: true, 
-                permissions: [] 
-            },
+        
             { name: '🔔 Notificar Eventos', color: '#99AAB5', hoist: false, permissions: [] },
             { name: '🎁 Notificar Sorteios', color: '#99AAB5', hoist: false, permissions: [] },
             { name: '📰 Notificar Notícias', color: '#99AAB5', hoist: false, permissions: [] }
