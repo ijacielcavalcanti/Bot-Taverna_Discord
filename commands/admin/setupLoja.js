@@ -12,12 +12,12 @@ module.exports = {
 
         // Lista completa de cargos da Loja
         const cargosLoja = [
-            { name: '🎨 Tintura Carmesim', color: '#DC143C', hoist: false },
-            { name: '🎨 Tintura Esmeralda', color: '#50C878', hoist: false },
-            { name: '🎨 Tintura Abissal', color: '#2F004F', hoist: false },
-            { name: '🎟️ VIP', color: '#ff1493', hoist: true },
-            { name: '👑 O Nobre', color: '#e74c3c', hoist: true }, // Título de Honra adicionado
-            { name: '🗝️ Acesso ao Porão', color: '#000000', hoist: false }
+            { name: '🎨 Tintura Carmesim', colors: '#DC143C', hoist: false },
+            { name: '🎨 Tintura Esmeralda', colors: '#50C878', hoist: false },
+            { name: '🎨 Tintura Abissal', colors: '#2F004F', hoist: false },
+            { name: '🎟️ VIP', colors: '#ff1493', hoist: true },
+            { name: '👑 O Nobre', colors: '#e74c3c', hoist: true }, // Título de Honra adicionado
+            { name: '🗝️ Acesso ao Porão', colors: '#000000', hoist: false }
         ];
 
         let criados = 0;
@@ -29,14 +29,14 @@ module.exports = {
             if (!roleExiste) {
                 await guild.roles.create({
                     name: item.name,
-                    color: item.color,
+                    colors: item.colors,
                     hoist: item.hoist,
                     reason: 'Setup automático: Criação de itens do Mercado Negro'
                 });
                 criados++;
             } else {
                 await roleExiste.edit({
-                    color: item.color,
+                    colors: item.colors,
                     hoist: item.hoist,
                     reason: 'Setup automático: Atualização de itens do Mercado Negro'
                 });

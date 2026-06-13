@@ -53,7 +53,7 @@ module.exports = {
                 // Se não existir, cria o cargo do zero
                 await guild.roles.create({
                     name: cargo.name,
-                    color: cargo.color,
+                    colors: cargo.colors,
                     hoist: cargo.hoist,
                     permissions: cargo.permissions,
                     reason: 'Setup automático: Criação de cargo utilitário'
@@ -62,7 +62,7 @@ module.exports = {
             } else {
                 // Se já existir, apenas edita as permissões, cor e destaque
                 await roleExiste.edit({
-                    color: cargo.color,
+                    colors: cargo.colors,
                     hoist: cargo.hoist,
                     permissions: cargo.permissions,
                     reason: 'Setup automático: Atualização de permissões e cores'
