@@ -261,7 +261,7 @@ module.exports = {
                 const { EmbedBuilder } = require('discord.js');
                 const novoEmbed = EmbedBuilder.from(embedAtual)
                     .setDescription(embedAtual.description + resultadoTexto)
-                    .setcolors(0x95A5A6); // Deixa o cartaz cinza indicando que fechou
+                    .setcolor(0x95A5A6); // Deixa o cartaz cinza indicando que fechou
 
                 // Desativa todos os botões da mensagem
                 const novaLinha = new ActionRowBuilder();

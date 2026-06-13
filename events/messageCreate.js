@@ -92,7 +92,7 @@ module.exports = {
                 db.prepare('UPDATE membros SET xp = ?, level = ?, gold = ?, mensagens = ? WHERE id = ?').run(novoXp, novoLevel, membroDb.gold + goldGanho + 50, novaQtdMensagens, message.author.id);
 
                 const embedLevelUp = {
-                    colors: 0xD4AF37,
+                    color: 0xD4AF37,
                     title: `✨ LEVEL UP! ${message.member.displayName} alcançou o Nível ${novoLevel}!`,
                     description: `A Taverna celebra seu avanço. Você recebeu **50 moedas de Ouro** de bônus!`,
                     image: { url: 'https://cdn.discordapp.com/attachments/1511518891594219540/1511522532006563870/Levelup_GUme_ascend.png?ex=6a20c28e&is=6a1f710e&hm=6092a90f85d0b9b2b556f5bb066b0c8761f27ff80b42967f2579bfa1fdce8a37&.png' },

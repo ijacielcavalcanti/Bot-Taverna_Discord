@@ -14,7 +14,7 @@ module.exports = {
         const cargosConfig = [
             {
                 name: '🛡️ Guarda da Cidade',
-                colorss: '#206694',
+                colors: '#206694',
                 hoist: true,
                 permissions: [
                     PermissionFlagsBits.ManageMessages,
@@ -27,20 +27,20 @@ module.exports = {
             },
             {
                 name: '🎨 Artesão',
-                colorss: '#E91E63',
+                colors: '#E91E63',
                 hoist: true,
                 permissions: [PermissionFlagsBits.ManageGuildExpressions] // Controla Emojis, Stickers e Soundboard
             },
             {
                 name: '🎸 Bardo',
-                colorss: '#9B59B6',
+                colors: '#9B59B6',
                 hoist: true,
                 permissions: []
             },
 
-            { name: '🔔 Notificar Eventos', colorss: '#99AAB5', hoist: false, permissions: [] },
-            { name: '🎁 Notificar Sorteios', colorss: '#99AAB5', hoist: false, permissions: [] },
-            { name: '📰 Notificar Notícias', colorss: '#99AAB5', hoist: false, permissions: [] }
+            { name: '🔔 Notificar Eventos', colors: '#99AAB5', hoist: false, permissions: [] },
+            { name: '🎁 Notificar Sorteios', colors: '#99AAB5', hoist: false, permissions: [] },
+            { name: '📰 Notificar Notícias', colors: '#99AAB5', hoist: false, permissions: [] }
         ];
 
         let criados = 0;
@@ -53,7 +53,7 @@ module.exports = {
                 // Se não existir, cria o cargo do zero
                 await guild.roles.create({
                     name: cargo.name,
-                    colors: cargo.colors,
+                    color: cargo.color,
                     hoist: cargo.hoist,
                     permissions: cargo.permissions,
                     reason: 'Setup automático: Criação de cargo utilitário'
@@ -62,7 +62,7 @@ module.exports = {
             } else {
                 // Se já existir, apenas edita as permissões, cor e destaque
                 await roleExiste.edit({
-                    colors: cargo.colors,
+                    color: cargo.color,
                     hoist: cargo.hoist,
                     permissions: cargo.permissions,
                     reason: 'Setup automático: Atualização de permissões e cores'

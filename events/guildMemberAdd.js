@@ -14,7 +14,7 @@ module.exports = {
             const urlBanner = member.user.bannerURL({ dynamic: true, size: 1024 }) || 'https://cdn.discordapp.com/attachments/1511518891594219540/1511522533592272947/Saudacoes_forasteiro.png?ex=6a20c28e&is=6a1f710e&hm=4897a134620638e1ac7ce3b711b925d1fea8f7a0352002b3f3c1cdcf0e075f2d&.png'; 
 
             const embedWelcome = {
-                colors: 0xD4AF37,
+                color: 0xD4AF37,
                 title: `🚪 As portas se abrem!`,
                 description: `Saudações, <@${member.id}>! Eu sou o Mestre taverneiro, e é uma honra recebê-lo(a) em **O Gume**.\n\n🗡️ **Seu primeiro passo:** Dirija-se ao canal **Porta da Taverna** para escolher sua classe e liberar seu acesso ao salão.\n\n📜 **Dica:** Leia o **Guia do Viajante** para entender como ganhar Ouro e XP em nosso servidor. Puxe uma cadeira e aproveite a estadia!`,
                 image: { url: urlBanner }, // Agora usa o banner pessoal do membro!
