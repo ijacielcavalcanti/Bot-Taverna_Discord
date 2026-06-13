@@ -3,14 +3,14 @@ const { SlashCommandBuilder, PermissionFlagsBits, MessageFlags } = require('disc
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('setup-loja')
-        .setDescription('[Admin] Cria automaticamente os cargos do Mercado Negro.')
+        .setDescription('[Admin] Cria ou atualiza os cargos do Mercado Negro.')
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
     async execute(interaction) {
         await interaction.deferReply({ flags: MessageFlags.Ephemeral });
         const guild = interaction.guild;
 
-        // Lista de cargos da Loja
+        // Lista completa de cargos da Loja
         const cargosLoja = [
             { name: '🎨 Tintura Carmesim', colors: '#DC143C', hoist: false },
             { name: '🎨 Tintura Esmeralda', colors: '#50C878', hoist: false },
@@ -21,6 +21,7 @@ module.exports = {
         ];
 
         let criados = 0;
+        let atualizados = 0;
 
         for (const item of cargosLoja) {
             const roleExiste = guild.roles.cache.find(r => r.name === item.name);
@@ -28,16 +29,23 @@ module.exports = {
             if (!roleExiste) {
                 await guild.roles.create({
                     name: item.name,
-                    colors: item.colors,
-                    hoist: item.hoist, // VIP fica separado na lista, tinturas não.
-                    reason: 'Setup automático do Mercado Negro'
+                    color: item.color,
+                    hoist: item.hoist,
+                    reason: 'Setup automático: Criação de itens do Mercado Negro'
                 });
                 criados++;
+            } else {
+                await roleExiste.edit({
+                    color: item.color,
+                    hoist: item.hoist,
+                    reason: 'Setup automático: Atualização de itens do Mercado Negro'
+                });
+                atualizados++;
             }
         }
 
         return interaction.followUp({
-            content: `🪙 **Setup da Loja Concluído!**\n${criados} cargos comerciais foram forjados no servidor.`,
+            content: `🪙 **Setup da Loja Concluído!**\nCargos recém-criados: ${criados}\nCargos atualizados: ${atualizados}`,
             flags: MessageFlags.Ephemeral
         });
     },

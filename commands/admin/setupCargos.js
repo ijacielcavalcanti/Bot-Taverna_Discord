@@ -12,10 +12,10 @@ module.exports = {
 
         // Lista de cargos estruturais com suas permissões específicas
         const cargosConfig = [
-            { 
-                name: '🛡️ Guarda da Cidade', 
-                colors: '#206694', 
-                hoist: true, 
+            {
+                name: '🛡️ Guarda da Cidade',
+                colorss: '#206694',
+                hoist: true,
                 permissions: [
                     PermissionFlagsBits.ManageMessages,
                     PermissionFlagsBits.MuteMembers,
@@ -23,49 +23,58 @@ module.exports = {
                     PermissionFlagsBits.MoveMembers,
                     PermissionFlagsBits.KickMembers,
                     PermissionFlagsBits.BanMembers
-                ] 
+                ]
             },
-            { 
-                name: '🎨 Artesão', 
-                colors: '#E91E63', 
-                hoist: true, 
+            {
+                name: '🎨 Artesão',
+                colorss: '#E91E63',
+                hoist: true,
                 permissions: [PermissionFlagsBits.ManageGuildExpressions] // Controla Emojis, Stickers e Soundboard
             },
-            { 
-                name: '🎸 Bardo', 
-                colors: '#9B59B6', 
-                hoist: true, 
-                permissions: [] 
+            {
+                name: '🎸 Bardo',
+                colorss: '#9B59B6',
+                hoist: true,
+                permissions: []
             },
-        
-            { name: '🔔 Notificar Eventos', colors: '#99AAB5', hoist: false, permissions: [] },
-            { name: '🎁 Notificar Sorteios', colors: '#99AAB5', hoist: false, permissions: [] },
-            { name: '📰 Notificar Notícias', colors: '#99AAB5', hoist: false, permissions: [] }
+
+            { name: '🔔 Notificar Eventos', colorss: '#99AAB5', hoist: false, permissions: [] },
+            { name: '🎁 Notificar Sorteios', colorss: '#99AAB5', hoist: false, permissions: [] },
+            { name: '📰 Notificar Notícias', colorss: '#99AAB5', hoist: false, permissions: [] }
         ];
 
         let criados = 0;
-        let existentes = 0;
+        let atualizados = 0;
 
         for (const cargo of cargosConfig) {
             const roleExiste = guild.roles.cache.find(r => r.name === cargo.name);
-            
+
             if (!roleExiste) {
+                // Se não existir, cria o cargo do zero
                 await guild.roles.create({
                     name: cargo.name,
                     colors: cargo.colors,
                     hoist: cargo.hoist,
                     permissions: cargo.permissions,
-                    reason: 'Setup automático de cargos utilitários da Taverna'
+                    reason: 'Setup automático: Criação de cargo utilitário'
                 });
                 criados++;
             } else {
-                existentes++;
+                // Se já existir, apenas edita as permissões, cor e destaque
+                await roleExiste.edit({
+                    colors: cargo.colors,
+                    hoist: cargo.hoist,
+                    permissions: cargo.permissions,
+                    reason: 'Setup automático: Atualização de permissões e cores'
+                });
+                atualizados++;
             }
         }
 
-        return interaction.followUp({ 
-            content: `✅ **Setup de Cargos Concluído!**\nCargos criados: ${criados}\nCargos que já existiam: ${existentes}`, 
-            flags: MessageFlags.Ephemeral 
+        return interaction.followUp({
+            content: `✅ **Setup de Cargos Concluído!**\nCargos recém-criados: ${criados}\nCargos atualizados: ${atualizados}`,
+            flags: MessageFlags.Ephemeral
         });
     },
+
 };
