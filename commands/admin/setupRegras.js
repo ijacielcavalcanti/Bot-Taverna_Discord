@@ -6,7 +6,7 @@ module.exports = {
         if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator)) return;
 
         const embedRegras = new EmbedBuilder()
-            .setColor(0xE74C3C)
+            .setcolors(0xE74C3C)
             .setTitle('📜 As Leis da Taverna O Gume')
             .setDescription('Para manter a paz e o bom convívio, todos os forasteiros devem seguir estas regras. A quebra destas leis resultará na intervenção da Guarda da Cidade.')
             .addFields(

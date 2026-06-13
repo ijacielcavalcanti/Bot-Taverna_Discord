@@ -39,7 +39,7 @@ module.exports = {
                 db.prepare('UPDATE membros SET gold = ? WHERE id = ?').run(perfilDb.gold - item.preco, message.author.id);
 
                 const embedCompra = {
-                    color: 0xFFD700,
+                    colors: 0xFFD700,
                     title: `🛍️ Compra Realizada!`,
                     description: `<@${message.author.id}> gastou **🪙 ${item.preco} Ouro** e adquiriu: **${item.nomeCargo}**!`,
                     thumbnail: { url: message.author.displayAvatarURL({ dynamic: true }) }
@@ -51,7 +51,7 @@ module.exports = {
                 db.prepare('UPDATE membros SET gold = ? WHERE id = ?').run(perfilDb.gold - item.preco, message.author.id);
 
                 const embedCompraReal = {
-                    color: 0x2ECC71,
+                    colors: 0x2ECC71,
                     title: `🎁 Resgate Premium Solicitado!`,
                     description: `<@${message.author.id}> alcançou o topo e gastou **🪙 ${item.preco} Ouro** para adquirir: **${item.nome}**!\n\nUm Mestre Taverneiro verificará sua lealdade e entrará em contato na sua DM para entregar a sua recompensa.`,
                     thumbnail: { url: message.author.displayAvatarURL({ dynamic: true }) }

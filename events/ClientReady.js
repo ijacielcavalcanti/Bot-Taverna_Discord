@@ -49,7 +49,7 @@ module.exports = {
                             // Posta no chat apenas se não for a primeira leitura, ou se for um dos 3 últimos
                             if (!primeiraBuscaJogos || jogosParaVerificar.indexOf(game) >= jogosParaVerificar.length - 3) {
                                 const embedGame = {
-                                    color: 0x2ECC71,
+                                    colors: 0x2ECC71,
                                     title: `🔥 JOGO GRÁTIS: ${game.title}`,
                                     url: game.open_giveaway_url,
                                     description: `${game.description}\n\n**Resgate agora:** [Clique aqui para pegar o jogo](${game.open_giveaway_url})`,
@@ -152,7 +152,7 @@ module.exports = {
                         const canalAvisos = guilda.channels.cache.get(ids.canais.avisos);
                         if (canalAvisos) {
                             const embedLevelUp = {
-                                color: 0xD4AF37,
+                                colors: 0xD4AF37,
                                 title: `✨ LEVEL UP NAS MESAS!`,
                                 description: `A Taverna celebra seu avanço. <@${member.id}> conversou tanto que alcançou o **Nível ${novoLevel}** e recebeu **50 moedas de Ouro** de bônus!`,
                                 image: { url: 'https://cdn.discordapp.com/attachments/1511518891594219540/1511522532006563870/Levelup_GUme_ascend.png?ex=6a20c28e&is=6a1f710e&hm=6092a90f85d0b9b2b556f5bb066b0c8761f27ff80b42967f2579bfa1fdce8a37&.png' },

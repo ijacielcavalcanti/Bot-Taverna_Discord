@@ -100,7 +100,7 @@ module.exports = {
                     const canalAvisos = newState.guild.channels.cache.get(ids.canais.avisos);
                     if (canalAvisos) {
                         const embedLive = {
-                            color: tipoAviso === 'STREAM' ? 0x9B59B6 : 0x3498DB,
+                            colors: tipoAviso === 'STREAM' ? 0x9B59B6 : 0x3498DB,
                             title: tipoAviso === 'STREAM' ? `📺 TRANSMISSÃO AO VIVO!` : `🎥 CÂMERA ABERTA!`,
                             description: `<@${newState.member.id}> abriu o vídeo na sala **${newState.channel.name}**!\n\nPuxe uma cadeira, traga sua caneca e venha acompanhar!`,
                             image: { url: tipoAviso === 'STREAM' ? 'https://cdn.discordapp.com/attachments/1511518891594219540/1511522532891820113/LIVE_ON_Gume.png?ex=6a20c28e&is=6a1f710e&hm=72dabdc21c539d93aca9d0e250754893963666a8550287a79f199e73a20b60d5&.png' : 'https://cdn.discordapp.com/attachments/1511518891594219540/1511522531184476333/Camera_ON.png?ex=6a20c28e&is=6a1f710e&hm=ce1261832f81cd2e0b2a00cd51429a05387ccb465298e1973ce5303391f37dd4&.png' },
@@ -111,7 +111,7 @@ module.exports = {
 
                         if (subiuDeNivel) {
                             const embedLevelUp = {
-                                color: 0xD4AF37,
+                                colors: 0xD4AF37,
                                 title: `✨ LEVEL UP EM CENA!`,
                                 description: `A Taverna celebra seu avanço. <@${newState.member.id}> alcançou o **Nível ${novoLevel}** produzindo conteúdo e recebeu **50 moedas de Ouro** de bônus!`,
                                 image: { url: 'https://cdn.discordapp.com/attachments/1511518891594219540/1511522532006563870/Levelup_GUme_ascend.png?ex=6a20c28e&is=6a1f710e&hm=6092a90f85d0b9b2b556f5bb066b0c8761f27ff80b42967f2579bfa1fdce8a37&.png' },

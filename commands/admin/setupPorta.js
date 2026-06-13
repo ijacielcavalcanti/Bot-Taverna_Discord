@@ -41,7 +41,7 @@ module.exports = {
         const linhaAlertas = new ActionRowBuilder().addComponents(menuAlertas);
 
         const embed = new EmbedBuilder()
-            .setColor(0xD4AF37)
+            .setcolors(0xD4AF37)
             .setTitle('🚪 O Mural de Contratos')
             .setDescription('Selecione abaixo quais estilos de jogo você joga para encontrar outros viajantes com os mesmos interesses.\n\nEscolha também quais alertas você deseja receber dos Arautos da Taverna. Você pode alterar suas escolhas a qualquer momento marcando ou desmarcando as opções.')
             .setImage('https://cdn.discordapp.com/attachments/1511518891594219540/1511522533592272947/Saudacoes_forasteiro.png'); // Substitua pela imagem oficial da porta

@@ -7,7 +7,7 @@ module.exports = {
         }
 
         const embedLoja = {
-            color: 0x2ECC71,
+            colors: 0x2ECC71,
             title: '🛒 O Mercado Negro d\'O Gume',
             description: 'Use seu Ouro suado para comprar relíquias. Digite `!comprar [id]` para adquirir.\n\n⚠️ **Aviso da Coroa:** *Os prêmios em dinheiro real possuem estoque mensal limitado. Limite de 1 resgate premium por membro a cada 30 dias.*',
             fields: [

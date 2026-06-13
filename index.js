@@ -73,7 +73,7 @@ client.player.events.on('playerStart', async (queue, track) => {
 
     // Cria o painel visual com validação de imagem (fallback para null)
     const embedBardo = new EmbedBuilder()
-        .setColor(0x1DB954)
+        .setcolors(0x1DB954)
         .setTitle('🎸 O Bardo está tocando')
         .setDescription(`**${track.title}**\n👤 Autor: ${track.author}`)
         .setThumbnail(track.thumbnail || null) // <-- Correção do erro fatal de URL vazia

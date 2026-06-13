@@ -5,7 +5,7 @@ module.exports = {
     aliases: ['niveis'],
     async execute(message, args, client, db, ids) {
         const embedJornada = new EmbedBuilder()
-            .setColor(0xF1C40F)
+            .setcolors(0xF1C40F)
             .setTitle('🗺️ A Jornada do Forasteiro')
             .setDescription('O caminho da glória exige tempo e muita conversa na Taverna. Veja as patentes que você pode conquistar ao acumular XP:')
             .addFields(

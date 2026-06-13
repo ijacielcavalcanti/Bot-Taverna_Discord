@@ -12,7 +12,7 @@ module.exports = {
         const xpProximo = (perfilDb.level * perfilDb.level) * 100;
 
         const embedPerfil = {
-            color: 0x3498db,
+            colors: 0x3498db,
             title: `📜 Ficha de Forasteiro: ${message.member.displayName}`,
             thumbnail: { url: message.author.displayAvatarURL({ dynamic: true }) },
             fields: [

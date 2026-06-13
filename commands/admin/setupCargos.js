@@ -14,7 +14,7 @@ module.exports = {
         const cargosConfig = [
             { 
                 name: '🛡️ Guarda da Cidade', 
-                color: '#206694', 
+                colors: '#206694', 
                 hoist: true, 
                 permissions: [
                     PermissionFlagsBits.ManageMessages,
@@ -27,20 +27,20 @@ module.exports = {
             },
             { 
                 name: '🎨 Artesão', 
-                color: '#E91E63', 
+                colors: '#E91E63', 
                 hoist: true, 
                 permissions: [PermissionFlagsBits.ManageGuildExpressions] // Controla Emojis, Stickers e Soundboard
             },
             { 
                 name: '🎸 Bardo', 
-                color: '#9B59B6', 
+                colors: '#9B59B6', 
                 hoist: true, 
                 permissions: [] 
             },
         
-            { name: '🔔 Notificar Eventos', color: '#99AAB5', hoist: false, permissions: [] },
-            { name: '🎁 Notificar Sorteios', color: '#99AAB5', hoist: false, permissions: [] },
-            { name: '📰 Notificar Notícias', color: '#99AAB5', hoist: false, permissions: [] }
+            { name: '🔔 Notificar Eventos', colors: '#99AAB5', hoist: false, permissions: [] },
+            { name: '🎁 Notificar Sorteios', colors: '#99AAB5', hoist: false, permissions: [] },
+            { name: '📰 Notificar Notícias', colors: '#99AAB5', hoist: false, permissions: [] }
         ];
 
         let criados = 0;
@@ -52,7 +52,7 @@ module.exports = {
             if (!roleExiste) {
                 await guild.roles.create({
                     name: cargo.name,
-                    color: cargo.color,
+                    colors: cargo.colors,
                     hoist: cargo.hoist,
                     permissions: cargo.permissions,
                     reason: 'Setup automático de cargos utilitários da Taverna'
