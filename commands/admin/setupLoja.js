@@ -29,14 +29,14 @@ module.exports = {
             if (!roleExiste) {
                 await guild.roles.create({
                     name: item.name,
-                    color: item.color,
+                    colors: item.colors,
                     hoist: item.hoist,
                     reason: 'Setup automático: Criação de itens do Mercado Negro'
                 });
                 criados++;
             } else {
                 await roleExiste.edit({
-                    color: item.color,
+                    colors: item.colors,
                     hoist: item.hoist,
                     reason: 'Setup automático: Atualização de itens do Mercado Negro'
                 });
