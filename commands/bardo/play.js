@@ -1,55 +1,74 @@
+const { SlashCommandBuilder, EmbedBuilder, MessageFlags } = require('discord.js');
+const ids = require('../../config/ids.json');
+const banners = require('../../utils/banners.js');
+
 module.exports = {
-    name: 'play',
-    aliases: ['iniciarbardo'],
-    async execute(message, args, client, db, ids) {
-        if (message.channel.id !== ids.canais.comandos) {
-            return message.reply(`🎸 O Bardo aceita pedidos de música apenas no balcão mágico: <#${ids.canais.comandos}>.`);
+    data: new SlashCommandBuilder()
+        .setName('play')
+        .setDescription('Pede ao Bardo para tocar uma canção na sua Mesa.')
+        .addStringOption(opt => opt.setName('busca').setDescription('Nome da música ou link da playlist').setRequired(true))
+        .addBooleanOption(opt => opt.setName('ambientacao').setDescription('Ativar o modo de loop infinito (Ambientação)?').setRequired(false)),
+
+    async execute(interaction) {
+        const client = interaction.client;
+
+        if (interaction.channelId !== ids.canais.comandos) {
+            return interaction.reply({ 
+                content: `🎸 O Bardo aceita pedidos de música apenas no balcão mágico: <#${ids.canais.comandos}>.`, 
+                flags: MessageFlags.Ephemeral 
+            });
         }
 
-        const canalVoz = message.member.voice.channel;
-        if (!canalVoz) return message.reply('❌ Você precisa estar em uma Mesa de voz.');
+        const canalVoz = interaction.member.voice.channel;
+        if (!canalVoz) {
+            return interaction.reply({ content: '❌ Você precisa estar em uma Mesa de voz para chamar o Bardo.', flags: MessageFlags.Ephemeral });
+        }
 
-        const busca = args.join(' ');
-        if (!busca) return message.reply('❌ Me diga o nome da música ou envie o link da playlist.');
+        await interaction.deferReply();
 
-        const mensagemCarregando = await message.reply('⏳ Afinando o alaúde e procurando as partituras...');
-
+        const busca = interaction.options.getString('busca');
+        const loopAtivado = interaction.options.getBoolean('ambientacao') || false;
+        
         try {
             const isLink = busca.includes('http://') || busca.includes('https://');
             const result = await client.player.search(busca, {
-                requestedBy: message.author,
+                requestedBy: interaction.user,
                 searchEngine: isLink ? 'auto' : 'youtubeSearch'
             });
 
             if (!result.hasTracks()) {
-                return mensagemCarregando.edit('❌ Não encontrei a música. Tente enviar o link direto!');
+                return interaction.editReply('❌ O Bardo não encontrou essa partitura. Tente enviar o link direto!');
             }
 
-            // O bot extrai o objeto 'queue' (fila) no momento em que dá o play
             const { queue } = await client.player.play(canalVoz, result, {
                 nodeOptions: {
-                    metadata: { channel: message.channel },
-                    leaveOnEmpty: false, // O Bardo fixa residência na sala (não sai se ficar vazia)
-                    leaveOnEnd: false,   // Permanece na sala mesmo se a fila acabar
+                    metadata: { channel: interaction.channel },
+                    leaveOnEmpty: false,
+                    leaveOnEnd: false,
                     volume: 40
                 }
             });
 
-            const isIniciarbardo = message.content.toLowerCase().startsWith('!iniciarbardo');
-
-            // Se o gatilho foi o comando de ambientação, ele tranca o repeat na fila inteira
-            if (isIniciarbardo) {
-                queue.setRepeatMode(2); // 2 = Repetir a Fila (Queue Repeat)
+            let avisoLoop = '';
+            if (loopAtivado) {
+                queue.setRepeatMode(2); // 2 = Queue Repeat
+                avisoLoop = '\n🔂 *Modo de Ambientação (Loop Infinito) Ativado!*';
             }
 
             const track = result.tracks[0];
-            const avisoLoop = isIniciarbardo ? '\n🔂 *Modo de Ambientação (Loop Infinito) Ativado!*' : '';
+            const imagemBanner = banners.getBanner('bardo');
 
-            return mensagemCarregando.edit(`✅ **${track.title}** adicionada à fila da Taverna!${avisoLoop}`);
+            const embedSucesso = new EmbedBuilder()
+                .setColor('#1DB954')
+                .setTitle('🎸 Partitura Encontrada')
+                .setDescription(`**${track.title}** foi adicionada à fila da Taverna!${avisoLoop}`)
+                .setImage(imagemBanner);
+
+            return interaction.editReply({ embeds: [embedSucesso] });
 
         } catch (error) {
             console.error('Erro de extração musical:', error);
-            return mensagemCarregando.edit('❌ Ocorreu um erro crítico ao puxar essa música. Tente outro link.');
+            return interaction.editReply('❌ Ocorreu um erro crítico ao puxar essa música. Tente outro link.');
         }
     }
 };

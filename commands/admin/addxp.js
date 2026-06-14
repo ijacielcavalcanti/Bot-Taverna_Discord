@@ -1,21 +1,42 @@
-const { PermissionsBitField } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder, MessageFlags } = require('discord.js');
+const banners = require('../../utils/banners.js');
 
 module.exports = {
-    name: 'addxp',
-    async execute(message, args, client, db, ids) {
-        if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator)) return;
-        
-        const usuario = message.mentions.users.first();
-        const quantidade = parseInt(args[1]);
-        
-        if (!usuario || isNaN(quantidade)) return message.reply('❌ Uso: `!addxp @usuario 500`');
+    data: new SlashCommandBuilder()
+        .setName('add-xp')
+        .setDescription('[Admin] Injeta experiência (XP) diretamente na conta de um membro.')
+        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
+        .addUserOption(opt => opt.setName('usuario').setDescription('O membro que receberá o XP').setRequired(true))
+        .addIntegerOption(opt => opt.setName('quantidade').setDescription('A quantidade de pontos').setRequired(true)),
 
-        db.prepare('UPDATE membros SET xp = xp + ? WHERE id = ?').run(quantidade, usuario.id);
-        message.reply(`✅ **${quantidade} pontos de XP** concedidos a <@${usuario.id}>.`);
+    async execute(interaction) {
+        const localDb = require('../../database.js');
+        const localIds = require('../../config/ids.json');
 
-        const canalLogs = message.guild.channels.cache.get(ids.canais.logsAdmin);
+        const usuario = interaction.options.getUser('usuario');
+        const quantidade = interaction.options.getInteger('quantidade');
+
+        let membroDb = localDb.prepare('SELECT * FROM membros WHERE id = ?').get(usuario.id);
+        
+        if (!membroDb) {
+            localDb.prepare('INSERT INTO membros (id, xp, level, gold, mensagens) VALUES (?, ?, 1, 0, 0)').run(usuario.id, quantidade);
+        } else {
+            localDb.prepare('UPDATE membros SET xp = xp + ? WHERE id = ?').run(quantidade, usuario.id);
+        }
+
+        const imagemBanner = banners.getBanner('dinamico');
+
+        const embedConfirma = new EmbedBuilder()
+            .setColor('#3498db')
+            .setTitle('✨ Experiência Concedida')
+            .setDescription(`Um conhecimento ancestral foi passado. **✨ ${quantidade} XP** concedidos a <@${usuario.id}>.\n\n*(Lembre-se: O nível não sobe automaticamente, o membro precisa interagir para o bot recalcular).*`)
+            .setImage(imagemBanner);
+
+        await interaction.reply({ embeds: [embedConfirma], flags: MessageFlags.Ephemeral });
+
+        const canalLogs = interaction.guild.channels.cache.get(localIds.canais.logsAdmin);
         if (canalLogs) {
-            canalLogs.send(`🚨 **AUDITORIA DE NÍVEL:** O administrador <@${message.author.id}> deu **✨ ${quantidade} XP** para <@${usuario.id}>.`);
+            canalLogs.send(`🚨 **AUDITORIA DE NÍVEL:** O administrador <@${interaction.user.id}> deu **✨ ${quantidade} XP** para <@${usuario.id}>.`);
         }
     }
 };

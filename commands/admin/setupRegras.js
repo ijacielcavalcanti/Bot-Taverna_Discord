@@ -1,12 +1,17 @@
-const { PermissionsBitField, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder, MessageFlags } = require('discord.js');
+const banners = require('../../utils/banners.js');
 
 module.exports = {
-    name: 'setupregras',
-    async execute(message, args, client, db, ids) {
-        if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator)) return;
+    data: new SlashCommandBuilder()
+        .setName('setup-regras')
+        .setDescription('[Admin] Cria o painel oficial com as Leis da Taverna.')
+        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+
+    async execute(interaction) {
+        const imagemBanner = banners.getBanner('dinamico');
 
         const embedRegras = new EmbedBuilder()
-            .setcolor(0xE74C3C)
+            .setColor('#E74C3C')
             .setTitle('📜 As Leis da Taverna O Gume')
             .setDescription('Para manter a paz e o bom convívio, todos os forasteiros devem seguir estas regras. A quebra destas leis resultará na intervenção da Guarda da Cidade.')
             .addFields(
@@ -16,9 +21,10 @@ module.exports = {
                 { name: '4. Bom Senso na Mesa de Voz', value: 'Não interrompa canais com ruídos propositais e respeite o espaço de quem está falando.' },
                 { name: '5. Mercado Negro e Recompensas', value: 'Os itens reais são prêmios de lealdade. O uso de contas falsas para inflar valores gerará banimento imediato.' }
             )
+            .setImage(imagemBanner)
             .setFooter({ text: 'A administração reserva-se o direito de intervir com base no bom senso.' });
 
-        await message.channel.send({ embeds: [embedRegras] });
-        await message.delete().catch(() => {});
+        await interaction.channel.send({ embeds: [embedRegras] });
+        await interaction.reply({ content: '✅ Painel de Regras criado com sucesso!', flags: MessageFlags.Ephemeral });
     }
 };

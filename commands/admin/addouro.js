@@ -1,21 +1,42 @@
-const { PermissionsBitField } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder, MessageFlags } = require('discord.js');
+const banners = require('../../utils/banners.js');
 
 module.exports = {
-    name: 'addouro',
-    async execute(message, args, client, db, ids) {
-        if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator)) return;
-        
-        const usuario = message.mentions.users.first();
-        const quantidade = parseInt(args[1]); // Lê o segundo argumento após o nome do comando
-        
-        if (!usuario || isNaN(quantidade)) return message.reply('❌ Uso: `!addouro @usuario 100`');
+    data: new SlashCommandBuilder()
+        .setName('add-ouro')
+        .setDescription('[Admin] Injeta ouro diretamente na conta de um membro.')
+        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
+        .addUserOption(opt => opt.setName('usuario').setDescription('O membro que receberá o ouro').setRequired(true))
+        .addIntegerOption(opt => opt.setName('quantidade').setDescription('A quantidade de moedas').setRequired(true)),
 
-        db.prepare('UPDATE membros SET gold = gold + ? WHERE id = ?').run(quantidade, usuario.id);
-        message.reply(`✅ **🪙 ${quantidade} Ouro** entregue para <@${usuario.id}>.`);
+    async execute(interaction) {
+        const localDb = require('../../database.js');
+        const localIds = require('../../config/ids.json');
 
-        const canalLogs = message.guild.channels.cache.get(ids.canais.logsAdmin);
+        const usuario = interaction.options.getUser('usuario');
+        const quantidade = interaction.options.getInteger('quantidade');
+
+        let membroDb = localDb.prepare('SELECT * FROM membros WHERE id = ?').get(usuario.id);
+        
+        if (!membroDb) {
+            localDb.prepare('INSERT INTO membros (id, xp, level, gold, mensagens) VALUES (?, 0, 1, ?, 0)').run(usuario.id, quantidade);
+        } else {
+            localDb.prepare('UPDATE membros SET gold = gold + ? WHERE id = ?').run(quantidade, usuario.id);
+        }
+
+        const imagemBanner = banners.getBanner('dinamico');
+
+        const embedConfirma = new EmbedBuilder()
+            .setColor('#FFD700')
+            .setTitle('🪙 Tesouro da Guilda Injetado')
+            .setDescription(`A coroa liberou fundos. **🪙 ${quantidade} Ouro** entregue diretamente para <@${usuario.id}>.`)
+            .setImage(imagemBanner);
+
+        await interaction.reply({ embeds: [embedConfirma], flags: MessageFlags.Ephemeral });
+
+        const canalLogs = interaction.guild.channels.cache.get(localIds.canais.logsAdmin);
         if (canalLogs) {
-            canalLogs.send(`🚨 **AUDITORIA DE TESOURO:** O administrador <@${message.author.id}> injetou **🪙 ${quantidade} Ouro** na conta de <@${usuario.id}>.`);
+            canalLogs.send(`🚨 **AUDITORIA DE TESOURO:** O administrador <@${interaction.user.id}> injetou **🪙 ${quantidade} Ouro** na conta de <@${usuario.id}>.`);
         }
     }
 };

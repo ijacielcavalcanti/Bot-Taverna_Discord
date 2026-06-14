@@ -1,11 +1,16 @@
-const { EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const banners = require('../../utils/banners.js');
 
 module.exports = {
-    name: 'jornada',
-    aliases: ['niveis'],
-    async execute(message, args, client, db, ids) {
+    data: new SlashCommandBuilder()
+        .setName('jornada')
+        .setDescription('Visualiza as patentes e a trilha de evolução na Guilda.'),
+
+    async execute(interaction) {
+        const imagemBanner = banners.getBanner('dinamico');
+
         const embedJornada = new EmbedBuilder()
-            .setcolors(0xF1C40F)
+            .setColor('#F1C40F')
             .setTitle('🗺️ A Jornada do Forasteiro')
             .setDescription('O caminho da glória exige tempo e muita conversa na Taverna. Veja as patentes que você pode conquistar ao acumular XP:')
             .addFields(
@@ -17,8 +22,9 @@ module.exports = {
                 { name: 'Nível 85', value: '🐦‍🔥 **Lenda Viva:** Um mito entre os mortais. O servidor inteiro estremece com a sua presença.', inline: false },
                 { name: 'Nível 100', value: '🪽 **Celeste:** O ápice absoluto da existência! Você transcendeu e faz parte da história da Taverna.', inline: false }
             )
-            .setFooter({ text: 'Dica: Digite !perfil para acompanhar o seu progresso rumo ao topo.' });
+            .setImage(imagemBanner)
+            .setFooter({ text: 'Dica: Digite /perfil para acompanhar o seu progresso rumo ao topo.' });
 
-        return message.reply({ embeds: [embedJornada] });
+        return interaction.reply({ embeds: [embedJornada] });
     }
 };
