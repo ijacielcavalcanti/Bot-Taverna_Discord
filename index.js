@@ -71,16 +71,18 @@ client.player.events.on('playerStart', async (queue, track) => {
         try { await painelAtual.delete(); } catch (error) { }
     }
 
-    // Cria o painel visual com validação de imagem (fallback para null)
+    // Puxa a arte sutil do Bardo
+    const imagemBanner = require('./utils/banners.js').getBanner('bardo');
+
     const embedBardo = new EmbedBuilder()
-        .setcolors(0x1DB954)
+        .setColor('#1DB954') 
         .setTitle('🎸 O Bardo está tocando')
         .setDescription(`**${track.title}**\n👤 Autor: ${track.author}`)
-        .setThumbnail(track.thumbnail || null) // <-- Correção do erro fatal de URL vazia
+        .setThumbnail(track.thumbnail || null)
+        .setImage(imagemBanner) // <-- O Banner foi adicionado aqui!
         .setFooter({ text: `Adicionada por ${track.requestedBy.username}` });
 
-
-    // Cria os botões fixos do painel
+    // Mantém os botões originais
     const botoes = new ActionRowBuilder().addComponents(
         new ButtonBuilder().setCustomId('btn_pause').setLabel('Pausar / Voltar').setStyle(ButtonStyle.Primary).setEmoji('⏯️'),
         new ButtonBuilder().setCustomId('btn_skip').setLabel('Pular').setStyle(ButtonStyle.Secondary).setEmoji('⏭️'),
@@ -88,10 +90,8 @@ client.player.events.on('playerStart', async (queue, track) => {
         new ButtonBuilder().setCustomId('btn_shuffle').setLabel('Embaralhar').setStyle(ButtonStyle.Success).setEmoji('🔀')
     );
 
-    // Identifica o canal de texto corretamente para evitar o segundo erro oculto
     const canalTexto = queue.metadata.channel || queue.metadata;
 
-    // Envia o novo painel para o final do chat e salva na memória
     if (canalTexto) {
         painelAtual = await canalTexto.send({ embeds: [embedBardo], components: [botoes] });
     }
