@@ -1,5 +1,4 @@
 const { SlashCommandBuilder, EmbedBuilder, MessageFlags } = require('discord.js');
-const ids = require('../../config/ids.json');
 const banners = require('../../utils/banners.js');
 
 module.exports = {
@@ -9,10 +8,10 @@ module.exports = {
 
     async execute(interaction) {
         const client = interaction.client;
+        const canalVoz = interaction.member.voice.channel;
 
-        if (interaction.channelId !== ids.canais.comandos) {
-            return interaction.reply({ content: `🎸 Use este comando no balcão: <#${ids.canais.comandos}>.`, flags: MessageFlags.Ephemeral });
-        }
+        if (!canalVoz) return interaction.reply({ content: '❌ Você precisa estar em uma Mesa.', flags: MessageFlags.Ephemeral });
+        if (interaction.channelId !== canalVoz.id) return interaction.reply({ content: `🎸 Use este comando no chat da sua Mesa: <#${canalVoz.id}>`, flags: MessageFlags.Ephemeral });
 
         const fila = client.player.nodes.get(interaction.guildId);
         if (!fila) {

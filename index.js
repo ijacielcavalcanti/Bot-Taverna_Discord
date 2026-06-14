@@ -33,10 +33,10 @@ if (fs.existsSync(commandsFolders)) {
         const commandFiles = fs.readdirSync(path.join(commandsFolders, folder)).filter(file => file.endsWith('.js'));
         for (const file of commandFiles) {
             const command = require(path.join(commandsFolders, folder, file));
-            
+
             // O bot agora aceita tanto comandos clássicos (!) quanto comandos de barra (/)
             const nomeDoComando = command.name || (command.data && command.data.name);
-            
+
             if (nomeDoComando) {
                 client.commands.set(nomeDoComando, command);
             }
@@ -64,25 +64,23 @@ for (const file of eventFiles) {
 // -----------------------------------------------------
 let painelAtual = null;
 
-// 2. O evento automático de quando uma música começa
+// O evento automático de quando uma música começa
 client.player.events.on('playerStart', async (queue, track) => {
-    // Se já existir um painel no chat, o bot apaga para não poluir
-    if (painelAtual) {
-        try { await painelAtual.delete(); } catch (error) { }
+    // Se já existir um painel no chat, o bot apaga a mensagem antiga para o novo painel descer
+    if (queue.metadata.painelAtual) {
+        try { await queue.metadata.painelAtual.delete(); } catch (error) { }
     }
 
-    // Puxa a arte sutil do Bardo
     const imagemBanner = require('./utils/banners.js').getBanner('bardo');
 
     const embedBardo = new EmbedBuilder()
-        .setColor('#1DB954') 
+        .setColor('#1DB954')
         .setTitle('🎸 O Bardo está tocando')
         .setDescription(`**${track.title}**\n👤 Autor: ${track.author}`)
         .setThumbnail(track.thumbnail || null)
-        .setImage(imagemBanner) // <-- O Banner foi adicionado aqui!
+        .setImage(imagemBanner)
         .setFooter({ text: `Adicionada por ${track.requestedBy.username}` });
 
-    // Mantém os botões originais
     const botoes = new ActionRowBuilder().addComponents(
         new ButtonBuilder().setCustomId('btn_pause').setLabel('Pausar / Voltar').setStyle(ButtonStyle.Primary).setEmoji('⏯️'),
         new ButtonBuilder().setCustomId('btn_skip').setLabel('Pular').setStyle(ButtonStyle.Secondary).setEmoji('⏭️'),
@@ -90,10 +88,10 @@ client.player.events.on('playerStart', async (queue, track) => {
         new ButtonBuilder().setCustomId('btn_shuffle').setLabel('Embaralhar').setStyle(ButtonStyle.Success).setEmoji('🔀')
     );
 
-    const canalTexto = queue.metadata.channel || queue.metadata;
-
+    const canalTexto = queue.metadata.channel;
     if (canalTexto) {
-        painelAtual = await canalTexto.send({ embeds: [embedBardo], components: [botoes] });
+        // Salva a mensagem atual na memória da própria fila
+        queue.metadata.painelAtual = await canalTexto.send({ embeds: [embedBardo], components: [botoes] });
     }
 });
 

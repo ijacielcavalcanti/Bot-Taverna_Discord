@@ -1,5 +1,4 @@
 const { SlashCommandBuilder, EmbedBuilder, MessageFlags } = require('discord.js');
-const ids = require('../../config/ids.json');
 const banners = require('../../utils/banners.js');
 
 module.exports = {
@@ -11,17 +10,18 @@ module.exports = {
 
     async execute(interaction) {
         const client = interaction.client;
-
-        if (interaction.channelId !== ids.canais.comandos) {
-            return interaction.reply({ 
-                content: `🎸 O Bardo aceita pedidos de música apenas no balcão mágico: <#${ids.canais.comandos}>.`, 
-                flags: MessageFlags.Ephemeral 
-            });
-        }
-
         const canalVoz = interaction.member.voice.channel;
+
         if (!canalVoz) {
             return interaction.reply({ content: '❌ Você precisa estar em uma Mesa de voz para chamar o Bardo.', flags: MessageFlags.Ephemeral });
+        }
+
+        // Trava para forçar o uso no chat da sala de voz
+        if (interaction.channelId !== canalVoz.id) {
+            return interaction.reply({ 
+                content: `🎸 O Bardo atende os pedidos diretamente no chat da sua Mesa. Clique aqui para pedir: <#${canalVoz.id}>`, 
+                flags: MessageFlags.Ephemeral 
+            });
         }
 
         await interaction.deferReply();
@@ -51,7 +51,7 @@ module.exports = {
 
             let avisoLoop = '';
             if (loopAtivado) {
-                queue.setRepeatMode(2); // 2 = Queue Repeat
+                queue.setRepeatMode(2); 
                 avisoLoop = '\n🔂 *Modo de Ambientação (Loop Infinito) Ativado!*';
             }
 
@@ -60,8 +60,8 @@ module.exports = {
 
             const embedSucesso = new EmbedBuilder()
                 .setColor('#1DB954')
-                .setTitle('🎸 Partitura Encontrada')
-                .setDescription(`**${track.title}** foi adicionada à fila da Taverna!${avisoLoop}`)
+                .setTitle('🎸 Partitura Adicionada')
+                .setDescription(`**${track.title}** foi colocada na fila da Taverna!${avisoLoop}`)
                 .setImage(imagemBanner);
 
             return interaction.editReply({ embeds: [embedSucesso] });

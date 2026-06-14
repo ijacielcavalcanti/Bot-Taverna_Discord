@@ -186,33 +186,55 @@ module.exports = {
         // ==========================================
         // 4. AÇÕES DOS BOTÕES DE MÚSICA
         // ==========================================
-        if (interaction.isButton() && interaction.customId.startsWith('btn_')) {
-            await interaction.deferUpdate(); // Evita a mensagem de erro no Discord
 
+        if (interaction.isButton() && interaction.customId.startsWith('btn_')) {
             const queue = client.player.nodes.get(interaction.guildId);
-            if (!queue || !queue.isPlaying()) {
-                return interaction.followUp({ content: 'Não há nenhuma música tocando.', ephemeral: true });
+
+            if (!queue) {
+                return interaction.reply({ content: '❌ Nenhuma música tocando no momento.', flags: MessageFlags.Ephemeral });
+            }
+
+            if (interaction.member.voice.channelId !== queue.connection.joinConfig.channelId) {
+                return interaction.reply({ content: '❌ Você precisa estar na Mesa com o Bardo para usar os controles.', flags: MessageFlags.Ephemeral });
             }
 
             try {
+                // Confirma a interação e apaga a mensagem antiga para forçar o painel a descer
+                await interaction.deferUpdate();
+                await interaction.message.delete().catch(() => { });
+
+                let statusMensagem = '';
+
                 if (interaction.customId === 'btn_pause') {
-                    queue.node.setPaused(!queue.node.isPaused());
-                    return interaction.followUp({ content: queue.node.isPaused() ? '⏸️ Pausada.' : '▶️ Retomada.', ephemeral: true });
-                }
-                if (interaction.customId === 'btn_skip') {
+                    const estaPausado = queue.node.isPaused();
+                    queue.node.setPaused(!estaPausado);
+                    statusMensagem = estaPausado ? '▶️ Música retomada.' : '⏸️ Música pausada.';
+                } else if (interaction.customId === 'btn_skip') {
                     queue.node.skip();
-                    return interaction.followUp({ content: '⏭️ Música pulada.', ephemeral: true });
-                }
-                if (interaction.customId === 'btn_stop') {
+                    statusMensagem = '⏭️ Faixa pulada! O Bardo já vai trocar.';
+                } else if (interaction.customId === 'btn_stop') {
                     queue.delete();
-                    return interaction.followUp({ content: '⏹️ Fila limpa.', ephemeral: true });
-                }
-                if (interaction.customId === 'btn_shuffle') {
+                    statusMensagem = '⏹️ O Bardo guardou o instrumento e a fila foi limpa.';
+                } else if (interaction.customId === 'btn_shuffle') {
                     queue.tracks.shuffle();
-                    return interaction.followUp({ content: '🔀 Fila embaralhada.', ephemeral: true });
+                    statusMensagem = '🔀 As partituras foram embaralhadas com sucesso!';
                 }
+
+                // Se mandou parar a música, apenas avisa e encerra (não recria o painel)
+                if (interaction.customId === 'btn_stop') {
+                    return interaction.channel.send({ content: statusMensagem });
+                }
+
+                // Recria o painel no final do chat com o aviso do que acabou de ser feito
+                const novoPainel = await interaction.channel.send({
+                    content: statusMensagem,
+                    embeds: [interaction.message.embeds[0]],
+                    components: [interaction.message.components[0]]
+                });
+                queue.metadata.painelAtual = novoPainel;
+
             } catch (error) {
-                console.error(error);
+                console.error('Erro nos controles do Bardo:', error);
             }
         }
 
