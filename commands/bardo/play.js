@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, MessageFlags } = require('discord.js');
+const ids = require('../../config/ids.json');
 const banners = require('../../utils/banners.js');
 
 module.exports = {
@@ -16,10 +17,10 @@ module.exports = {
             return interaction.reply({ content: '❌ Você precisa estar em uma Mesa de voz para chamar o Bardo.', flags: MessageFlags.Ephemeral });
         }
 
-        // Trava para forçar o uso no chat da sala de voz
-        if (interaction.channelId !== canalVoz.id) {
+        // Permite o uso no Balcão Mágico ou no Chat da Mesa de Voz
+        if (interaction.channelId !== ids.canais.comandos && interaction.channelId !== canalVoz.id) {
             return interaction.reply({ 
-                content: `🎸 O Bardo atende os pedidos diretamente no chat da sua Mesa. Clique aqui para pedir: <#${canalVoz.id}>`, 
+                content: `🎸 O Bardo atende os pedidos apenas no <#${ids.canais.comandos}> ou diretamente no chat da sua Mesa: <#${canalVoz.id}>`, 
                 flags: MessageFlags.Ephemeral 
             });
         }

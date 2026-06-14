@@ -1,40 +1,46 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder, MessageFlags } = require('discord.js');
 const db = require('../../database.js');
 const banners = require('../../utils/banners.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('panorama')
-        .setDescription('Exibe o quadro de líderes e os membros mais ricos da Taverna.'),
+        .setDescription('[Admin] Visão do Olho de Sauron: Exibe o panorama completo de um forasteiro.')
+        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
+        .addUserOption(opt => 
+            opt.setName('alvo')
+               .setDescription('O membro que será investigado')
+               .setRequired(true)),
 
     async execute(interaction) {
-        // Puxa os 10 maiores níveis e desempata pelo Ouro
-        const topMembros = db.prepare('SELECT * FROM membros ORDER BY level DESC, gold DESC LIMIT 10').all();
-        
-        if (topMembros.length === 0) {
-            return interaction.reply({ content: 'A Guilda ainda está vazia. Nenhuma lenda para contar.', ephemeral: true });
+        const alvo = interaction.options.getMember('alvo');
+
+        if (!alvo) {
+            return interaction.reply({ content: '❌ Membro não encontrado no servidor.', flags: MessageFlags.Ephemeral });
         }
 
-        let descricaoRank = 'Estes são os forasteiros mais influentes e prósperos d\'O Gume:\n\n';
-        
-        topMembros.forEach((membro, index) => {
-            let medalha = '🏅';
-            if (index === 0) medalha = '🥇';
-            if (index === 1) medalha = '🥈';
-            if (index === 2) medalha = '🥉';
+        const stats = db.prepare('SELECT * FROM membros WHERE id = ?').get(alvo.id) || { level: 1, xp: 0, gold: 0, mensagens: 0 };
+        const xpProximo = (stats.level * stats.level) * 100;
 
-            descricaoRank += `${medalha} **<@${membro.id}>**\n└ Nível: \`${membro.level}\` | Ouro: \`🪙 ${membro.gold}\` | Msg: \`${membro.mensagens}\`\n\n`;
-        });
+        const dataEntrada = alvo.joinedAt.toLocaleDateString('pt-BR');
+        const contaCriada = alvo.user.createdAt.toLocaleDateString('pt-BR');
+        const cargosLista = alvo.roles.cache.filter(r => r.id !== interaction.guild.id).map(r => r.name).join(' • ') || 'Nenhum cargo';
 
         const imagemBanner = banners.getBanner('dinamico');
 
         const embedPanorama = new EmbedBuilder()
-            .setColor('#FF4500')
-            .setTitle('🏆 Panorama da Guilda')
-            .setDescription(descricaoRank)
+            .setColor('#8E44AD')
+            .setTitle(`👁️ O Olho de Sauron: Panorama de ${alvo.user.username}`)
+            .setThumbnail(alvo.user.displayAvatarURL({ dynamic: true, size: 1024 }))
             .setImage(imagemBanner)
-            .setFooter({ text: 'Atualizado em tempo real pelo banco de dados da Taverna.' });
+            .addFields(
+                { name: '👤 Identidade e Registro', value: `**ID:** \`${alvo.id}\`\n**Conta Criada:** ${contaCriada}\n**Chegou na Taverna:** ${dataEntrada}`, inline: false },
+                { name: '📊 Status RPG', value: `**Nível:** ${stats.level}\n**XP:** ${stats.xp} / ${xpProximo}\n**Ouro:** 🪙 ${stats.gold}\n**Mensagens Enviadas:** 💬 ${stats.mensagens}`, inline: false },
+                { name: '🏷️ Cargos na Guilda', value: `\`${cargosLista}\``, inline: false }
+            )
+            .setFooter({ text: 'Arquivos Confidenciais d\'O Gume' })
+            .setTimestamp();
 
-        await interaction.reply({ embeds: [embedPanorama] });
+        return interaction.reply({ embeds: [embedPanorama] });
     }
 };
