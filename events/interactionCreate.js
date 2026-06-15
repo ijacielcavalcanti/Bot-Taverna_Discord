@@ -18,7 +18,7 @@ module.exports = {
                 await command.execute(interaction);
             } catch (error) {
                 console.error(`Erro ao executar o comando /${interaction.commandName}:`, error);
-                const resposta = { content: '❌ Ocorreu uma falha grave na Taverna ao tentar executar isso.', ephemeral: true };
+                const resposta = { content: '❌ Ocorreu uma falha grave na Taverna ao tentar executar isso.', flags: MessageFlags.Ephemeral };
 
                 if (interaction.replied || interaction.deferred) {
                     await interaction.followUp(resposta);
@@ -26,7 +26,7 @@ module.exports = {
                     await interaction.reply(resposta);
                 }
             }
-            return; // Impede que o código continue rodando e verifique botões acidentalmente
+            return; 
         }
 
         // ==========================================
@@ -38,13 +38,11 @@ module.exports = {
 
                 const member = interaction.member;
                 const guild = interaction.guild;
-                const selecoes = interaction.values; // Lista com os nomes dos cargos escolhidos
+                const selecoes = interaction.values; 
 
-                // Puxa as opções originais do menu que o membro clicou para saber o que ele NÃO escolheu
                 const opcoesDoMenu = interaction.component.options.map(opt => opt.value);
 
                 try {
-                    // 1. Adiciona os cargos que o membro selecionou no menu
                     for (const nomeCargo of selecoes) {
                         const cargo = guild.roles.cache.find(r => r.name === nomeCargo);
                         if (cargo && !member.roles.cache.has(cargo.id)) {
@@ -52,9 +50,8 @@ module.exports = {
                         }
                     }
 
-                    // 2. Remove os cargos que o membro desmarcou no menu
                     for (const nomeOpcao of opcoesDoMenu) {
-                        if (!selecoes.includes(nomeOpcao)) { // Se está no menu, mas não está selecionado
+                        if (!selecoes.includes(nomeOpcao)) { 
                             const cargoRemover = guild.roles.cache.find(r => r.name === nomeOpcao);
                             if (cargoRemover && member.roles.cache.has(cargoRemover.id)) {
                                 await member.roles.remove(cargoRemover);
@@ -62,7 +59,6 @@ module.exports = {
                         }
                     }
 
-                    // 3. Garante o cargo de Viajante (caso seja a primeira vez dele)
                     const cargoViajante = guild.roles.cache.find(r => r.name === '🎒 Viajante');
                     if (cargoViajante && !member.roles.cache.has(cargoViajante.id)) {
                         await member.roles.add(cargoViajante);
@@ -76,6 +72,7 @@ module.exports = {
                 }
             }
         }
+
         // ==========================================
         // 2. BOTÕES DA MESA TEMPORÁRIA (Salas de Voz)
         // ==========================================
@@ -83,30 +80,29 @@ module.exports = {
             const canalVoz = interaction.member.voice.channel;
 
             if (!canalVoz) {
-                return interaction.reply({ content: '❌ Você precisa estar na sua Mesa (canal de voz) para usar isso.', ephemeral: true });
+                return interaction.reply({ content: '❌ Você precisa estar na sua Mesa (canal de voz) para usar isso.', flags: MessageFlags.Ephemeral });
             }
 
-            // Verifica se quem clicou é o dono da sala
             const permissoesMembro = canalVoz.permissionsFor(interaction.member);
             if (!permissoesMembro.has(PermissionsBitField.Flags.ManageChannels)) {
-                return interaction.reply({ content: '❌ Apenas o dono desta mesa pode alterar as regras dela!', ephemeral: true });
+                return interaction.reply({ content: '❌ Apenas o dono desta mesa pode alterar as regras dela!', flags: MessageFlags.Ephemeral });
             }
 
             if (interaction.customId === 'mesa_lock') {
                 const cargoViajante = interaction.guild.roles.cache.find(r => r.name === '🎒 Viajante');
                 await canalVoz.permissionOverwrites.edit(cargoViajante || interaction.guild.roles.everyone, { Connect: false });
-                return interaction.reply({ content: '🔒 **Mesa Trancada!** Ninguém mais pode entrar.', ephemeral: true });
+                return interaction.reply({ content: '🔒 **Mesa Trancada!** Ninguém mais pode entrar.', flags: MessageFlags.Ephemeral });
             }
 
             if (interaction.customId === 'mesa_unlock') {
                 const cargoViajante = interaction.guild.roles.cache.find(r => r.name === '🎒 Viajante');
                 await canalVoz.permissionOverwrites.edit(cargoViajante || interaction.guild.roles.everyone, { Connect: true });
-                return interaction.reply({ content: '🔓 **Mesa Destrancada!** Qualquer forasteiro pode entrar agora.', ephemeral: true });
+                return interaction.reply({ content: '🔓 **Mesa Destrancada!** Qualquer forasteiro pode entrar agora.', flags: MessageFlags.Ephemeral });
             }
 
             if (interaction.customId === 'mesa_limit') {
                 await canalVoz.setUserLimit(5);
-                return interaction.reply({ content: '👥 **Mesa Limitada!** Apenas 5 cadeiras disponíveis agora.', ephemeral: true });
+                return interaction.reply({ content: '👥 **Mesa Limitada!** Apenas 5 cadeiras disponíveis agora.', flags: MessageFlags.Ephemeral });
             }
 
             if (interaction.customId === 'mesa_rename') {
@@ -139,58 +135,21 @@ module.exports = {
             if (canalVoz) {
                 try {
                     await canalVoz.setName(`🍻 ${novoNome}`);
-                    return interaction.reply({ content: `✏️ O letreiro da mesa foi alterado para **🍻 ${novoNome}**!`, ephemeral: true });
+                    return interaction.reply({ content: `✏️ O letreiro da mesa foi alterado para **🍻 ${novoNome}**!`, flags: MessageFlags.Ephemeral });
                 } catch (error) {
-                    return interaction.reply({ content: '❌ O Discord tem um limite de renomeações. Aguarde alguns minutos e tente de novo.', ephemeral: true });
+                    return interaction.reply({ content: '❌ O Discord tem um limite de renomeações. Aguarde alguns minutos e tente de novo.', flags: MessageFlags.Ephemeral });
                 }
             }
         }
 
         // ==========================================
-        // 4. BOTÕES DE MÚSICA (Bardo)
+        // 4. CONTROLES DO BARDO (MÚSICA)
         // ==========================================
-        // Verifique se os customIds abaixo (music_pause, music_skip, music_stop) 
-        // são os mesmos que você definiu no seu comando de música.
-        if (interaction.isButton() && interaction.customId.startsWith('music_')) {
-
-            // Avisa ao Discord que estamos processando, evitando o erro "interação falhou"
-            await interaction.deferUpdate();
-
-            const queue = client.player.nodes.get(interaction.guildId);
-            if (!queue || !queue.isPlaying()) {
-                return interaction.followUp({ content: 'Não há nenhuma música tocando no momento.', ephemeral: true });
-            }
-
-            try {
-                if (interaction.customId === 'music_pause') {
-                    queue.node.setPaused(!queue.node.isPaused());
-                    const status = queue.node.isPaused() ? 'Pausada' : 'Retomada';
-                    return interaction.followUp({ content: `A música foi ${status}.`, ephemeral: true });
-                }
-
-                if (interaction.customId === 'music_skip') {
-                    queue.node.skip();
-                    return interaction.followUp({ content: 'Música pulada.', ephemeral: true });
-                }
-
-                if (interaction.customId === 'music_stop') {
-                    queue.delete();
-                    return interaction.followUp({ content: 'Música parada e fila limpa.', ephemeral: true });
-                }
-            } catch (error) {
-                console.error('Erro na interação de música:', error);
-                return interaction.followUp({ content: 'Ocorreu um erro ao executar esta ação.', ephemeral: true });
-            }
-        }
-
-        // ==========================================
-        // 4. AÇÕES DOS BOTÕES DE MÚSICA
-        // ==========================================
-
         if (interaction.isButton() && interaction.customId.startsWith('btn_')) {
             const queue = client.player.nodes.get(interaction.guildId);
 
             if (!queue) {
+                await interaction.message.delete().catch(() => {});
                 return interaction.reply({ content: '❌ Nenhuma música tocando no momento.', flags: MessageFlags.Ephemeral });
             }
 
@@ -199,7 +158,6 @@ module.exports = {
             }
 
             try {
-                // Confirma a interação e apaga a mensagem antiga para forçar o painel a descer
                 await interaction.deferUpdate();
                 await interaction.message.delete().catch(() => { });
 
@@ -220,12 +178,10 @@ module.exports = {
                     statusMensagem = '🔀 As partituras foram embaralhadas com sucesso!';
                 }
 
-                // Se mandou parar a música, apenas avisa e encerra (não recria o painel)
                 if (interaction.customId === 'btn_stop') {
                     return interaction.channel.send({ content: statusMensagem });
                 }
 
-                // Recria o painel no final do chat com o aviso do que acabou de ser feito
                 const novoPainel = await interaction.channel.send({
                     content: statusMensagem,
                     embeds: [interaction.message.embeds[0]],
@@ -238,7 +194,6 @@ module.exports = {
             }
         }
 
-
         // ==========================================
         // 5. REGISTRO E ENCERRAMENTO DAS ENQUETES
         // ==========================================
@@ -246,10 +201,9 @@ module.exports = {
             const mensagemId = interaction.message.id;
             const usuarioId = interaction.user.id;
 
-            // --- LÓGICA DE ENCERRAR VOTAÇÃO (Apenas Admins) ---
             if (interaction.customId === 'enquete_close') {
                 if (!interaction.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
-                    return interaction.reply({ content: '❌ Apenas a Alta Cúpula pode encerrar uma votação.', ephemeral: true });
+                    return interaction.reply({ content: '❌ Apenas a Alta Cúpula pode encerrar uma votação.', flags: MessageFlags.Ephemeral });
                 }
 
                 const enqueteInfo = memoriaEnquetes.get(mensagemId) || { votos: {} };
@@ -259,7 +213,6 @@ module.exports = {
                 let maxVotos = -1;
                 let vencedores = [];
 
-                // Calcula quem ganhou (ignorando o botão de encerrar)
                 botoesAntigos.forEach((btn, i) => {
                     if (btn.customId === 'enquete_close') return;
                     const v = enqueteInfo.votos[i] || 0;
@@ -280,12 +233,10 @@ module.exports = {
                     resultadoTexto += `🏆 **Vencedora:** ${vencedores[0]} (com ${maxVotos} votos)`;
                 }
 
-                const { EmbedBuilder } = require('discord.js');
                 const novoEmbed = EmbedBuilder.from(embedAtual)
                     .setDescription(embedAtual.description + resultadoTexto)
-                    .setcolor(0x95A5A6); // Deixa o cartaz cinza indicando que fechou
+                    .setColor(0x95A5A6); 
 
-                // Desativa todos os botões da mensagem
                 const novaLinha = new ActionRowBuilder();
                 botoesAntigos.forEach(btn => {
                     const novoBotao = ButtonBuilder.from(btn).setDisabled(true);
@@ -293,11 +244,10 @@ module.exports = {
                 });
 
                 await interaction.update({ embeds: [novoEmbed], components: [novaLinha] });
-                memoriaEnquetes.delete(mensagemId); // Apaga da memória para não pesar o bot
+                memoriaEnquetes.delete(mensagemId); 
                 return;
             }
 
-            // --- LÓGICA NORMAL DE COMPUTAR O VOTO ---
             const indexOpcao = parseInt(interaction.customId.split('_')[1]);
 
             if (!memoriaEnquetes.has(mensagemId)) {
@@ -310,7 +260,7 @@ module.exports = {
             const enqueteInfo = memoriaEnquetes.get(mensagemId);
 
             if (enqueteInfo.votaram.has(usuarioId)) {
-                return interaction.reply({ content: '❌ Seu voto já foi registrado pelo Conselho!', ephemeral: true });
+                return interaction.reply({ content: '❌ Seu voto já foi registrado pelo Conselho!', flags: MessageFlags.Ephemeral });
             }
 
             enqueteInfo.votaram.add(usuarioId);
@@ -321,61 +271,13 @@ module.exports = {
 
             let novaDescricao = 'Escolha uma das opções abaixo clicando nos botões.\n\n';
             botoesEnquete.forEach((btn, i) => {
-                if (btn.customId === 'enquete_close') return; // Pula o botão vermelho no cartaz
+                if (btn.customId === 'enquete_close') return; 
                 const totalVotos = enqueteInfo.votos[i] || 0;
                 novaDescricao += `**${i + 1}️⃣ ${btn.label}** — ${totalVotos} votos\n`;
             });
 
-            const { EmbedBuilder } = require('discord.js');
             const novoEmbed = EmbedBuilder.from(embedAtual).setDescription(novaDescricao);
-
             await interaction.update({ embeds: [novoEmbed] });
         }
-
-        // ==========================================
-        // BOTÕES DO PAINEL DO BARDO (MÚSICA)
-        // ==========================================
-        if (interaction.isButton() && interaction.customId.startsWith('btn_')) {
-            const queue = client.player.nodes.get(interaction.guildId);
-
-            if (!queue) {
-                return interaction.reply({ content: '❌ Nenhuma música tocando no momento.', ephemeral: true });
-            }
-
-            // Garante que só quem está na mesma sala de voz pode clicar
-            if (interaction.member.voice.channelId !== queue.connection.joinConfig.channelId) {
-                return interaction.reply({ content: '❌ Você precisa estar na Mesa com o Bardo para usar os controles.', ephemeral: true });
-            }
-
-            try {
-                switch (interaction.customId) {
-                    case 'btn_pause':
-                        const estaPausado = queue.node.isPaused();
-                        queue.node.setPaused(!estaPausado);
-                        await interaction.reply({ content: estaPausado ? '▶️ Música retomada.' : '⏸️ Música pausada.', ephemeral: true });
-                        break;
-
-                    case 'btn_skip':
-                        queue.node.skip();
-                        await interaction.reply({ content: '⏭️ Faixa pulada! O Bardo já vai trocar.', ephemeral: true });
-                        break;
-
-                    case 'btn_stop':
-                        queue.delete();
-                        await interaction.reply({ content: '⏹️ O Bardo guardou o instrumento e a fila foi limpa.', ephemeral: true });
-                        break;
-
-                    case 'btn_shuffle':
-                        queue.tracks.shuffle();
-                        await interaction.reply({ content: '🔀 As partituras foram embaralhadas com sucesso!', ephemeral: true });
-                        break;
-                }
-            } catch (error) {
-                console.error('Erro nos controles do Bardo:', error);
-                await interaction.reply({ content: '❌ Houve uma falha ao tentar controlar a música.', ephemeral: true });
-            }
-        }
-
     }
-
 };
