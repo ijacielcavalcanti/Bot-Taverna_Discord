@@ -80,6 +80,8 @@ module.exports = {
                 goldGanho += Math.floor(Math.random() * 3) + 1;
             }
             if (Math.random() < 0.10) goldGanho += 1;
+            
+            // Opcional: penaliza levemente o ganho de XP se o membro ficar digitando ! à toa
             if (message.content.startsWith('!')) { xpGanho = 5; goldGanho = 0; }
 
             const novoXp = membroDb.xp + xpGanho;
@@ -141,24 +143,6 @@ module.exports = {
             } else {
                 db.prepare('UPDATE membros SET xp = ?, gold = ?, mensagens = ? WHERE id = ?').run(novoXp, membroDb.gold + goldGanho, novaQtdMensagens, message.author.id);
             }
-        }
-
-        // ==========================================
-        // 3. DESPACHANTE DE COMANDOS (ROUTER)
-        // ==========================================
-        if (!message.content.startsWith('!')) return;
-
-        const args = message.content.slice(1).trim().split(/ +/);
-        const commandName = args.shift().toLowerCase();
-
-        const command = client.commands.get(commandName) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
-        
-        if (!command) return;
-
-        try {
-            await command.execute(message, args, client, db, ids);
-        } catch (error) {
-            console.error(`[Erro Comando] Execução falhou para: ${commandName}`, error);
         }
     }
 };
