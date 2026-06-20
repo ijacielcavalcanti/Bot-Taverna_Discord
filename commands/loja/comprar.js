@@ -63,7 +63,7 @@ module.exports = {
             });
         }
 
-        const imagemBanner = banners.getBanner('comprar');
+        const imagemBanner = banners.getBanner('comprar_32x9');
 
         try {
             // Entrega automática para Cargos Virtuais Base

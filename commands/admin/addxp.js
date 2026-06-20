@@ -24,7 +24,7 @@ module.exports = {
             localDb.prepare('UPDATE membros SET xp = xp + ? WHERE id = ?').run(quantidade, usuario.id);
         }
 
-        const imagemBanner = banners.getBanner('dinamico');
+        const imagemBanner = banners.getBanner('add_xp_32x9');
 
         const embedConfirma = new EmbedBuilder()
             .setColor('#3498db')

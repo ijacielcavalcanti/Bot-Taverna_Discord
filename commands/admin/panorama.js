@@ -26,7 +26,7 @@ module.exports = {
         const contaCriada = alvo.user.createdAt.toLocaleDateString('pt-BR');
         const cargosLista = alvo.roles.cache.filter(r => r.id !== interaction.guild.id).map(r => r.name).join(' • ') || 'Nenhum cargo';
 
-        const imagemBanner = banners.getBanner('dinamico');
+        const imagemBanner = banners.getBanner('panorama_32x9');
 
         const embedPanorama = new EmbedBuilder()
             .setColor('#8E44AD')

@@ -8,7 +8,7 @@ module.exports = {
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
     async execute(interaction) {
-        const imagemBanner = banners.getBanner('dinamico');
+        const imagemBanner = banners.getBanner('regras_21x9');
 
         const embedRegras = new EmbedBuilder()
             .setColor('#E74C3C')

@@ -71,7 +71,7 @@ client.player.events.on('playerStart', async (queue, track) => {
         try { await queue.metadata.painelAtual.delete(); } catch (error) { }
     }
 
-    const imagemBanner = require('./utils/banners.js').getBanner('bardo');
+    const imagemBanner = require('./utils/banners.js').getBanner('bardo_32x9');
 
     const embedBardo = new EmbedBuilder()
         .setColor('#1DB954')

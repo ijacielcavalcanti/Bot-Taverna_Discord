@@ -15,7 +15,7 @@ module.exports = {
             });
         }
 
-        const imagemBanner = banners.getBanner('loja');
+        const imagemBanner = banners.getBanner('loja_dinamico');
 
         const embedLoja = new EmbedBuilder()
             .setColor('#2ECC71')

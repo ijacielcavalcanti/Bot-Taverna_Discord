@@ -7,7 +7,7 @@ module.exports = {
         .setDescription('Visualiza as patentes e a trilha de evolução na Guilda.'),
 
     async execute(interaction) {
-        const imagemBanner = banners.getBanner('dinamico');
+        const imagemBanner = banners.getBanner('jornada_21x9');
 
         const embedJornada = new EmbedBuilder()
             .setColor('#F1C40F')

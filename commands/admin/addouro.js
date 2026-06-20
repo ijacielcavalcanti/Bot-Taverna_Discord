@@ -24,7 +24,7 @@ module.exports = {
             localDb.prepare('UPDATE membros SET gold = gold + ? WHERE id = ?').run(quantidade, usuario.id);
         }
 
-        const imagemBanner = banners.getBanner('dinamico');
+        const imagemBanner = banners.getBanner('add_ouro_32x9');
 
         const embedConfirma = new EmbedBuilder()
             .setColor('#FFD700')

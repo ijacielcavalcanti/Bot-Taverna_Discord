@@ -44,7 +44,7 @@ module.exports = {
             .setcolor(0xD4AF37)
             .setTitle('🚪 O Mural de Contratos')
             .setDescription('Selecione abaixo quais estilos de jogo você joga para encontrar outros viajantes com os mesmos interesses.\n\nEscolha também quais alertas você deseja receber dos Arautos da Taverna. Você pode alterar suas escolhas a qualquer momento marcando ou desmarcando as opções.')
-            .setImage('https://cdn.discordapp.com/attachments/1511518891594219540/1511522533592272947/Saudacoes_forasteiro.png'); // Substitua pela imagem oficial da porta
+            .setImage('https://cdn.discordapp.com/attachments/1511518891594219540/1518024518084333618/PortaBoasvindasmain.png?ex=6a386a00&is=6a371880&hm=45603c0211adbc6527129299e10d172053f61288ff40e6f941bcd0d3c6f3d2a0&.png'); // Substitua pela imagem oficial da porta
 
         await interaction.channel.send({ embeds: [embed], components: [linhaJogos, linhaAlertas] });
 

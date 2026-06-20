@@ -22,7 +22,7 @@ module.exports = {
             interaction.options.getString('opcao4')
         ].filter(Boolean); // Remove as opções que foram deixadas em branco
 
-        const imagemBanner = banners.getBanner('dinamico'); 
+        const imagemBanner = banners.getBanner('setup_enquete_21x9'); 
 
         const embedVotacao = new EmbedBuilder()
             .setColor('#F1C40F')

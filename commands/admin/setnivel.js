@@ -38,7 +38,7 @@ module.exports = {
         else if (alvoLevel >= 10) await membro.roles.add(guild.roles.cache.find(r => r.name === '🗡️ Aventureiro'));
         else await membro.roles.add(guild.roles.cache.find(r => r.name === '🎒 Viajante'));
 
-        const imagemBanner = banners.getBanner('dinamico');
+        const imagemBanner = banners.getBanner('set_nivel_32x9');
 
         const embedConfirma = new EmbedBuilder()
             .setColor('#9B59B6')
