@@ -72,6 +72,7 @@ module.exports = {
                 membroDb = { id: message.author.id, xp: 0, level: 1, gold: 0, mensagens: 0 };
             }
 
+            // Ganhos base
             let xpGanho = Math.floor(Math.random() * 11) + 10;
             let goldGanho = 0;
 
@@ -80,9 +81,17 @@ module.exports = {
                 goldGanho += Math.floor(Math.random() * 3) + 1;
             }
             if (Math.random() < 0.10) goldGanho += 1;
-            
-            // Opcional: penaliza levemente o ganho de XP se o membro ficar digitando ! à toa
             if (message.content.startsWith('!')) { xpGanho = 5; goldGanho = 0; }
+
+            // --- BÔNUS DE MACENA (SERVER BOOSTER) ---
+            // Verifica se o membro tem o cargo 'Macena' ou se o Discord acusa o boost ativo
+            const isMacena = message.member.roles.cache.some(r => r.name === 'Macena') || message.member.premiumSinceTimestamp !== null;
+            
+            if (isMacena) {
+                xpGanho = Math.floor(xpGanho * 1.5); // +50% de XP
+                goldGanho = goldGanho > 0 ? Math.floor(goldGanho * 2) : 1; // Dobro de ouro (ou pelo menos 1 garantido)
+            }
+            // ----------------------------------------
 
             const novoXp = membroDb.xp + xpGanho;
             const novaQtdMensagens = membroDb.mensagens + 1;
@@ -91,13 +100,20 @@ module.exports = {
 
             if (novoXp >= xpParaProximoNivel) {
                 novoLevel++;
-                db.prepare('UPDATE membros SET xp = ?, level = ?, gold = ?, mensagens = ? WHERE id = ?').run(novoXp, novoLevel, membroDb.gold + goldGanho + 50, novaQtdMensagens, message.author.id);
+                
+                // Ouro de Level Up: 50 normal, 100 para Macenas
+                const bonusLevelUp = isMacena ? 100 : 50; 
+                
+                db.prepare('UPDATE membros SET xp = ?, level = ?, gold = ?, mensagens = ? WHERE id = ?').run(novoXp, novoLevel, membroDb.gold + goldGanho + bonusLevelUp, novaQtdMensagens, message.author.id);
+
+                let textoDescricao = `A Taverna celebra seu avanço. Você recebeu **${bonusLevelUp} moedas de Ouro** de bônus!`;
+                if (isMacena) textoDescricao += `\n💎 *Bônus de Macena aplicado!*`;
 
                 const embedLevelUp = {
-                    color: 0xD4AF37,
+                    color: isMacena ? 0xF47FFF : 0xD4AF37, // Rosa/Roxo se for Macena, Dourado se for normal
                     title: `✨ LEVEL UP! ${message.member.displayName} alcançou o Nível ${novoLevel}!`,
-                    description: `A Taverna celebra seu avanço. Você recebeu **50 moedas de Ouro** de bônus!`,
-                    image: { url: 'https://cdn.discordapp.com/attachments/1511518891594219540/1511522532006563870/Levelup_GUme_ascend.png?ex=6a20c28e&is=6a1f710e&hm=6092a90f85d0b9b2b556f5bb066b0c8761f27ff80b42967f2579bfa1fdce8a37&.png' },
+                    description: textoDescricao,
+                    image: { url: 'https://cdn.discordapp.com/attachments/1511518891594219540/1518000312949014638/levelup1.png?ex=6a385375&is=6a3701f5&hm=7c3627387c5a489b0f94c3b8f666f3f4e53fbdae55cd74fa13537f47b0be3db5&.png' },
                     thumbnail: { url: message.author.displayAvatarURL({ dynamic: true }) }
                 };
 
@@ -108,6 +124,7 @@ module.exports = {
                     canalAvisos.send({ embeds: [embedLevelUp] });
                 }
 
+                // ... (O resto do código que distribui os cargos de Nível continua igual a partir daqui)
                 const guild = message.guild;
                 const cargos = {
                     10: guild.roles.cache.find(r => r.name === '🗡️ Aventureiro'),

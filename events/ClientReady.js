@@ -155,7 +155,7 @@ module.exports = {
                                 color: 0xD4AF37,
                                 title: `✨ LEVEL UP NAS MESAS!`,
                                 description: `A Taverna celebra seu avanço. <@${member.id}> conversou tanto que alcançou o **Nível ${novoLevel}** e recebeu **50 moedas de Ouro** de bônus!`,
-                                image: { url: 'https://cdn.discordapp.com/attachments/1511518891594219540/1511522532006563870/Levelup_GUme_ascend.png?ex=6a20c28e&is=6a1f710e&hm=6092a90f85d0b9b2b556f5bb066b0c8761f27ff80b42967f2579bfa1fdce8a37&.png' },
+                                image: { url: 'https://cdn.discordapp.com/attachments/1511518891594219540/1518000312949014638/levelup1.png?ex=6a385375&is=6a3701f5&hm=7c3627387c5a489b0f94c3b8f666f3f4e53fbdae55cd74fa13537f47b0be3db5&.png' },
                                 thumbnail: { url: member.user.displayAvatarURL({ dynamic: true }) }
                             };
                             canalAvisos.send({ embeds: [embedLevelUp] });

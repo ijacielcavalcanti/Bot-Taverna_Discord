@@ -11,7 +11,7 @@ module.exports = {
             await member.user.fetch();
 
             // Pega o banner do membro. Se ele não tiver, usa a imagem padrão da Taverna
-            const urlBanner = member.user.bannerURL({ dynamic: true, size: 1024 }) || 'https://cdn.discordapp.com/attachments/1511518891594219540/1511522533592272947/Saudacoes_forasteiro.png?ex=6a20c28e&is=6a1f710e&hm=4897a134620638e1ac7ce3b711b925d1fea8f7a0352002b3f3c1cdcf0e075f2d&.png'; 
+            const urlBanner = member.user.bannerURL({ dynamic: true, size: 1024 }) || 'https://cdn.discordapp.com/attachments/1511518891594219540/1518024518084333618/PortaBoasvindasmain.png?ex=6a386a00&is=6a371880&hm=45603c0211adbc6527129299e10d172053f61288ff40e6f941bcd0d3c6f3d2a0&.png'; 
 
             const embedWelcome = {
                 color: 0xD4AF37,
