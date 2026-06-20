@@ -26,7 +26,7 @@ module.exports = {
         }
 
         const xpProximo = (perfilDb.level * perfilDb.level) * 100;
-        const imagemBanner = banners.getBanner('dinamico');
+        const imagemBanner = banners.getBanner('perfil_dinamico');
 
         const embedPerfil = new EmbedBuilder()
             .setColor('#3498db')
