@@ -10,7 +10,7 @@ module.exports = {
         ],
         jornada_21x9: 'https://cdn.discordapp.com/attachments/1511518891594219540/1518000485116805130/Jornada.png?ex=6a38539e&is=6a37021e&hm=2c5d77b205993dd15852adc781e2ec674ce0fc6fefb6010a4acb900d73cd2f45&.png',
         loja_dinamico: [
-            'https://cdn.discordapp.com/attachments/1511518891594219540/1518000484483600454/Mercadornegro.png?ex=6a38539e&is=6a37021e&hm=22f03566a8ca0517b87c4e334ae0cbcdd29e99783d8177dce4ceb8f58461e142&.png',
+            //'https://cdn.discordapp.com/attachments/1511518891594219540/1518000484483600454/Mercadornegro.png?ex=6a38539e&is=6a37021e&hm=22f03566a8ca0517b87c4e334ae0cbcdd29e99783d8177dce4ceb8f58461e142&.png',
             'https://cdn.discordapp.com/attachments/1511518891594219540/1518000385997013052/Mercadornegro1.png?ex=6a385387&is=6a370207&hm=0a228e8704c4dc1503c1e527c301e0322c87f19fa8a592029e5123b3ef5e7e52&.png'
         ],
         comprar_32x9: 'https://cdn.discordapp.com/attachments/1511518891594219540/1518000383048290384/Compra.png?ex=6a385386&is=6a370206&hm=6c7f1ac09a1afb699880c6959b5300003c5b2dcaae70c9fed407b4edd68140c5&.png',
