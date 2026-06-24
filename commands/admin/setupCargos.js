@@ -27,13 +27,13 @@ module.exports = {
             },
             {
                 name: '🎨 Artesão',
-                color: '#E91E63',
+                color: '#e66b94',
                 hoist: true,
                 permissions: [PermissionFlagsBits.ManageGuildExpressions] // Controla Emojis, Stickers e Soundboard
             },
             {
                 name: '🎸 Bardo',
-                color: '#9B59B6',
+                color: '#6d2f03',
                 hoist: true,
                 permissions: []
             },
