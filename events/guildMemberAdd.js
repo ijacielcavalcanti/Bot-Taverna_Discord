@@ -16,7 +16,7 @@ module.exports = {
             const embedWelcome = {
                 color: 0xD4AF37,
                 title: `🚪 As portas se abrem!`,
-                description: `Saudações, <@${member.id}>! Eu sou o Mestre taverneiro, e é uma honra recebê-lo(a) em **O Gume**.\n\n🗡️ **Seu primeiro passo:** Dirija-se ao canal **Porta da Taverna** para escolher sua classe e liberar seu acesso ao salão.\n\n📜 **Dica:** Leia o **Guia do Viajante** para entender como ganhar Ouro e XP em nosso servidor. Puxe uma cadeira e aproveite a estadia!`,
+                description: `Saudações, <@${member.id}>! Eu sou o Mestre taverneiro, e é uma honra recebê-lo(a) em **A Taverna**.\n\n🗡️ **Seu primeiro passo:** Dirija-se ao canal **Porta da Taverna** para escolher sua classe e liberar seu acesso ao salão.\n\n📜 **Dica:** Leia o **Guia do Viajante** para entender como ganhar Ouro e XP em nosso servidor. Puxe uma cadeira e aproveite a estadia!`,
                 image: { url: urlBanner }, // Agora usa o banner pessoal do membro!
                 thumbnail: { url: member.user.displayAvatarURL({ dynamic: true, size: 512 }) },
                 footer: { text: `Agora somos ${member.guild.memberCount} membros na Taverna!` }
